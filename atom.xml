@@ -4,7 +4,7 @@
   <title><![CDATA[No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2014-03-22T01:20:24-04:00</updated>
+  <updated>2014-03-22T14:57:13-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[I have a blog!]]></title>
     <link href="http://nwallace.github.io/blog/2014/03/21/i-have-a-blog/"/>
-    <updated>2014-03-21T20:00:00-04:00</updated>
+    <updated>2014-03-21T00:00:00-04:00</updated>
     <id>http://nwallace.github.io/blog/2014/03/21/i-have-a-blog</id>
     <content type="html"><![CDATA[<p>Thanks for visiting my blog! This blog is under construction right now, but I will have my first post out soon. :)</p>
 ]]></content>
