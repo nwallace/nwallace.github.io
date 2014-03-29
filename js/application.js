@@ -10,7 +10,32 @@ $(document).ready(function() {
   $("a[href='#']").click(function(e) {
     e.preventDefault();
   });
+  NavBarHandler.init();
 });
+
+var NavBarHandler = {
+
+  init: function() {
+    NavBarHandler.navbar = $('#title-banner .navbar');
+    NavBarHandler.container = $('#main');
+    NavBarHandler.origOffset = NavBarHandler.navbar.offset().top;
+    $(document).scroll(NavBarHandler.stickToTop);
+  },
+
+  navbar: undefined,
+
+  origOffset: undefined,
+
+  stickToTop: function() {
+    if ($(window).scrollTop() >= NavBarHandler.origOffset) {
+      NavBarHandler.navbar.addClass('sticky');
+      NavBarHandler.container.addClass('menu-padding');
+    } else {
+      NavBarHandler.navbar.removeClass('sticky');
+      NavBarHandler.container.removeClass('menu-padding');
+    }
+  },
+}
 
 function updateContainer() {
   var $containerWidth = $(window).width();
