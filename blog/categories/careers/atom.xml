@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[No Such Thing as Two]]></title>
-  <link href="http://nwallace.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: careers | No Such Thing as Two]]></title>
+  <link href="http://nwallace.github.io/blog/categories/careers/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
   <updated>2014-04-03T17:16:50-04:00</updated>
   <id>http://nwallace.github.io/</id>
@@ -50,7 +50,7 @@ library.</p>
 
 <h3>Hop on the Rails</h3>
 
-<p>Let&#39;s be real &#8211; people learn Ruby so they can write Rails apps. Yes, Ruby is an
+<p>Let&#39;s be real -- people learn Ruby so they can write Rails apps. Yes, Ruby is an
 awesome language in its own right, but that&#39;s not why most people pick it up.
 The absolute best tutorial for a beginner to learn Rails is the one by Michael
 Hartl. You can read his book online for free at
@@ -64,7 +64,7 @@ was invaluable for me as a way to really sink your teeth into a real Rails app.<
 <h3>Bring it home</h3>
 
 <p>After that, you <em>have</em> to start your own project. Tutorials are great, but they
-hold your hand the whole way &#8211; they don&#39;t force you answer any of your own
+hold your hand the whole way -- they don&#39;t force you answer any of your own
 questions or come up with your own ideas. If you don&#39;t already have a project
 idea in mind, do what inspired me: find a problem where someone is using an
 Excel spreadsheet and turn it into a web app. My aunt is a chef, and she was
@@ -77,15 +77,6 @@ or framework, so you need to be personally invested in solving your problem.</p>
 comfortable in Ruby and with Rails, so don&#39;t get discouraged if it takes awhile.
 At the end of the day, Ruby is about <strong>joy</strong>. It&#39;s optimized for you, the
 developer. So have fun with it, and try to improve just a little everyday.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[I have a blog!]]></title>
-    <link href="http://nwallace.github.io/blog/2014/03/21/i-have-a-blog/"/>
-    <updated>2014-03-21T00:00:00-04:00</updated>
-    <id>http://nwallace.github.io/blog/2014/03/21/i-have-a-blog</id>
-    <content type="html"><![CDATA[<p>Thanks for visiting my blog! This blog is under construction right now, but I will have my first post out soon. :)</p>
 ]]></content>
   </entry>
   
