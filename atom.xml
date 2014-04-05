@@ -4,7 +4,7 @@
   <title><![CDATA[No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2014-04-03T17:20:13-04:00</updated>
+  <updated>2014-04-05T12:28:53-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -22,12 +22,10 @@
 being able to do that. Most of the developers I know do Java or C++ (since
 that&#39;s what they taught in college), and when I told them I was looking for a
 Ruby job a lot of them were curious about the appeal. I have been trying to
-<del>save</del> convert them, and I wanted to jot down my path to
-<del>salvation</del> learn Ruby so others could do the same.</p>
+convert them, and I wanted to jot down my path to <del>salvation</del> learn
+Ruby so others could do the same.</p>
 
-<h2>First steps</h2>
-
-<h3>Get a handle on the language</h3>
+<h2>Get a handle on the language</h2>
 
 <p>There are tons of awesome resources on the web for learning Ruby, but my
 favorite for anyone just starting out is
@@ -39,29 +37,30 @@ before. The tracks get more and more advanced as you go along, so there are
 resources here for people who may have played around with Ruby in the past as
 well, but don&#39;t know the language very well.</p>
 
-<h3>Reach enlightenment</h3>
+<h2>Reach enlightenment</h2>
 
 <p>After getting a feel for the syntax and basic usage of the language, I moved
-onto the <a href="http://rubykoans.com/">Ruby Koans</a>. The Koans are a special kind of
+onto the <a href="http://rubykoans.com">Ruby Koans</a>. The Koans are a special kind of
 experience. They walk you through different features of the language like your
 own personal Mr. Miyagi. They start to engrain the idea of test-driven
 development while going in-depth on language constructs and the standard
 library.</p>
 
-<h3>Hop on the Rails</h3>
+<h2>Hop on the Rails</h2>
 
 <p>Let&#39;s be real &#8211; people learn Ruby so they can write Rails apps. Yes, Ruby is an
 awesome language in its own right, but that&#39;s not why most people pick it up.
 The absolute best tutorial for a beginner to learn Rails is the one by Michael
 Hartl. You can read his book online for free at
-<a href="http://ruby.railstutorial.org/">ruby.railstutorial.org</a>. The source is on
-Github for easy reference if you make a mistake, and there are lots of <a href="http://stackoverflow.com/questions/tagged/railstutorial.org">Stack
+<a href="http://ruby.railstutorial.org">ruby.railstutorial.org</a>. The source is on
+<a href="https://github.com/railstutorial">Github</a> for easy reference if you make a
+mistake, and there are lots of <a href="http://stackoverflow.com/questions/tagged/railstutorial.org">Stack
 Overflow</a> answers
 to help you along as well. Hartl&#39;s tutorial walks you through building a Twitter
 clone, teaching you Rails, TDD, Twitter Bootstrap, and Heroku along the way. It
 was invaluable for me as a way to really sink your teeth into a real Rails app.</p>
 
-<h3>Bring it home</h3>
+<h2>Bring it home</h2>
 
 <p>After that, you <em>have</em> to start your own project. Tutorials are great, but they
 hold your hand the whole way &#8211; they don&#39;t force you answer any of your own

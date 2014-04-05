@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: careers | No Such Thing as Two]]></title>
-  <link href="http://nwallace.github.io/blog/categories/careers/atom.xml" rel="self"/>
+  <title><![CDATA[Category: ruby | No Such Thing as Two]]></title>
+  <link href="http://nwallace.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
   <updated>2014-04-05T12:28:53-04:00</updated>
   <id>http://nwallace.github.io/</id>
