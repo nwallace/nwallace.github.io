@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: ruby | No Such Thing as Two]]></title>
-  <link href="http://nwallace.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <title><![CDATA[Category: arch | No Such Thing as Two]]></title>
+  <link href="http://nwallace.github.io/blog/categories/arch/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
   <updated>2014-04-11T12:09:45-04:00</updated>
   <id>http://nwallace.github.io/</id>
@@ -144,72 +144,6 @@ file we just created:</p>
 
 <p>The installation should succeed, and you can now use your favorite Ruby version
 manager to use Ruby 2.1.1.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Getting Started with Ruby]]></title>
-    <link href="http://nwallace.github.io/blog/2014/04/03/getting-started-with-ruby/"/>
-    <updated>2014-04-03T04:26:00-04:00</updated>
-    <id>http://nwallace.github.io/blog/2014/04/03/getting-started-with-ruby</id>
-    <content type="html"><![CDATA[<p>I&#39;m self-taught in Ruby. I owe a huge debt to the incredible Ruby community for
-being able to do that. Most of the developers I know do Java or C++ (since
-that&#39;s what they taught in college), and when I told them I was looking for a
-Ruby job a lot of them were curious about the appeal. I have been trying to
-convert them, and I wanted to jot down my path to <del>salvation</del> learn
-Ruby so others could do the same.</p>
-
-<h2>Get a handle on the language</h2>
-
-<p>There are tons of awesome resources on the web for learning Ruby, but my
-favorite for anyone just starting out is
-<a href="http://www.codecademy.com/tracks/ruby">Codecademy</a>. Codecademy has tracks for a
-lot more than just Ruby, and I&#39;ve had a great experience with all of the ones
-I&#39;ve tried. They&#39;re perfect for people who have never programmed Ruby before,
-and I think they would be great for people who have never programmed at all
-before. The tracks get more and more advanced as you go along, so there are
-resources here for people who may have played around with Ruby in the past as
-well, but don&#39;t know the language very well.</p>
-
-<h2>Reach enlightenment</h2>
-
-<p>After getting a feel for the syntax and basic usage of the language, I moved
-onto the <a href="http://rubykoans.com">Ruby Koans</a>. The Koans are a special kind of
-experience. They walk you through different features of the language like your
-own personal Mr. Miyagi. They start to engrain the idea of test-driven
-development while going in-depth on language constructs and the standard
-library.</p>
-
-<h2>Hop on the Rails</h2>
-
-<p>Let&#39;s be real -- people learn Ruby so they can write Rails apps. Yes, Ruby is an
-awesome language in its own right, but that&#39;s not why most people pick it up.
-The absolute best tutorial for a beginner to learn Rails is the one by Michael
-Hartl. You can read his book online for free at
-<a href="http://ruby.railstutorial.org">ruby.railstutorial.org</a>. The source is on
-<a href="https://github.com/railstutorial">Github</a> for easy reference if you make a
-mistake, and there are lots of <a href="http://stackoverflow.com/questions/tagged/railstutorial.org">Stack
-Overflow</a> answers
-to help you along as well. Hartl&#39;s tutorial walks you through building a Twitter
-clone, teaching you Rails, TDD, Twitter Bootstrap, and Heroku along the way. It
-was invaluable for me as a way to really sink your teeth into a real Rails app.</p>
-
-<h2>Bring it home</h2>
-
-<p>After that, you <em>have</em> to start your own project. Tutorials are great, but they
-hold your hand the whole way -- they don&#39;t force you answer any of your own
-questions or come up with your own ideas. If you don&#39;t already have a project
-idea in mind, do what inspired me: find a problem where someone is using an
-Excel spreadsheet and turn it into a web app. My aunt is a chef, and she was
-using Excel to track inventory and expenses, so I turned it into a Rails app.
-The most important thing about the project is that it needs to be something to
-keep you motivated. Motivation is the largest hurdle in learning a new language
-or framework, so you need to be personally invested in solving your problem.</p>
-
-<p>It took me about 8 months of my free time to get to a place where I really felt
-comfortable in Ruby and with Rails, so don&#39;t get discouraged if it takes awhile.
-At the end of the day, Ruby is about <strong>joy</strong>. It&#39;s optimized for you, the
-developer. So have fun with it, and try to improve just a little everyday.</p>
 ]]></content>
   </entry>
   

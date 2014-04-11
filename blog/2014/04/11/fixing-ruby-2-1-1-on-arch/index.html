@@ -1,24 +1,131 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[No Such Thing as Two]]></title>
-  <link href="http://nwallace.github.io/atom.xml" rel="self"/>
-  <link href="http://nwallace.github.io/"/>
-  <updated>2014-04-11T12:09:45-04:00</updated>
-  <id>http://nwallace.github.io/</id>
-  <author>
-    <name><![CDATA[Nathan Wallace]]></name>
-    <email><![CDATA[nathan@nosuchthingastwo.com]]></email>
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Fixing Ruby 2.1.1 on Arch - No Such Thing as Two</title>
+  <meta name="author" content="Nathan Wallace">
+
+   
+  <meta name="description" content="A blog about Ruby!">
+  
+  <meta name="keywords" content="">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <entry>
-    <title type="html"><![CDATA[Fixing Ruby 2.1.1 on Arch]]></title>
-    <link href="http://nwallace.github.io/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/"/>
-    <updated>2014-04-11T00:00:00-04:00</updated>
-    <id>http://nwallace.github.io/blog/2014/04/11/fixing-ruby-2-1-1-on-arch</id>
-    <content type="html"><![CDATA[<p>I recently tried to install Ruby 2.1.1 on my <a href="http://www.archlinux.org">Arch</a>
+  <link rel="canonical" href="http://nwallace.github.io/blog/2014/04/11/fixing-ruby-2-1-1-on-arch">
+  <link href="/favicon.png" rel="icon">
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic|Ubuntu+Mono:400,700,400italic|Open+Sans:300italic,700italic,300,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Averia+Sans+Libre:300,400,700,300italic,400italic,700italic|Roboto+Condensed:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="No Such Thing as Two" type="application/atom+xml">
+  <script src="/js/jquery.js"></script>
+  <script src="/js/bootstrap-collapse.js"></script>
+  <script src="/js/modernizr-2.0.js"></script>
+  <script src="/js/octopress.js" type="text/javascript"></script>
+  <script src="/js/application.js"></script>
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-49639013-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header id="title-banner">
+  <div id="banner-brand">
+    <div class="container">
+      <a href="/" title="No Such Thing as Two">No Such Thing as Two</a>
+      <h3 class="tagline">0011110000110011</h3>
+    </div>
+  </div>
+  <div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="fui-menu-24"></span>
+        </a>
+        <div class="nav-collapse collapse navbar-responsive-collapse" style="height:0;">
+          <ul class="nav">
+  <li >
+    <a href="/" title="0011110000110011">
+      <i class="icon-home social-navbar"></i>
+    </a>
+  </li>
+  <!---->
+</ul>
+
+<ul class="nav pull-right">
+  
+  <li><a href="http://github.com/nwallace" title="Github Profile"><i class="icon-github-sign social-navbar"></i></a></li>
+  
+  
+  
+  <li><a href="http://twitter.com/nosuchthingas2" title="Twitter Profile"><i class="icon-twitter-sign social-navbar"></i></a></li>
+  
+  
+  
+  <li><a href="http://linkedin.com/pub/nathan-wallace/32/40a/352" title="Linkedin Profile"><i class="icon-linkedin-sign social-navbar"></i></a></li>
+  
+  
+  
+  
+  <li><a href="mailto:nathan@nosuchthingastwo.com" title="Email"><i class="icon-envelope social-navbar"></i></a></li>
+  
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <div class="container" id="main">
+    <div class="row-fluid">
+      <div id="content">
+        <div class="span8">
+          <div>
+<article class="hentry" role="article">
+  
+
+  <header>
+    <div class="jumbotron">
+      Fixing Ruby 2.1.1 on Arch
+      <h5>
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2014-04-11T00:00:00-04:00" pubdate data-updated="true">April 11<span>th</span>, 2014</time></h5>
+    </div>
+  </header>
+  <div class="row-fluid">
+    <div class="span12">
+      <p>I recently tried to install Ruby 2.1.1 on my <a href="http://www.archlinux.org">Arch</a>
 box with <a href="https://github.com/postmodern/ruby-install"><code>ruby-install</code></a>.
 Unfortunately, <a href="https://www.ruby-forum.com/topic/4486950">there&#39;s a bug</a> on Arch
 Linux in the current stable build (2.1.1p76).</p>
@@ -86,7 +193,7 @@ going to the package page for your architecture. For me, that&#39;s
 <a href="https://www.archlinux.org/packages/extra/x86_64/ruby/">here</a>. On the right side
 of the page, follow the link to view the source files:</p>
 
-<p><img src="http://nwallace.github.io/images/posts/package-actions.png" alt="Source Files"></p>
+<p><img src="/images/posts/package-actions.png" alt="Source Files"></p>
 
 <p>If there are any updates to the source made by the package maintainers, you will
 see patch files for them. In this case, there is one patch file:</p>
@@ -211,82 +318,165 @@ file we just created:</p>
 
 <p>The installation should succeed, and you can now use your favorite Ruby version
 manager to use Ruby 2.1.1.</p>
-]]></content>
-  </entry>
+
+    </div>
+  </div>
+
+
+
+  <footer>
+    <hr>
+    
+      <div class="row-fluid">
+        
+          <div class="span6">
+            <p class="meta">
+            
+            
+
+
+
+  <a href="/blog/categories/arch/"><span class="badge">arch</span></a>
+
+  <a href="/blog/categories/bugs/"><span class="badge">bugs</span></a>
+
+  <a href="/blog/categories/ruby/"><span class="badge">ruby</span></a>
+
+  <a href="/blog/categories/ruby-install/"><span class="badge">ruby-install</span></a>
+
+
+
+
+            </p>
+          </div>
+          
+            <div class="span6 social-sharing">
+              <div class="sharing">
+  <div class="addthis_toolbox addthis_default_style ">
   
-  <entry>
-    <title type="html"><![CDATA[Getting Started with Ruby]]></title>
-    <link href="http://nwallace.github.io/blog/2014/04/03/getting-started-with-ruby/"/>
-    <updated>2014-04-03T04:26:00-04:00</updated>
-    <id>http://nwallace.github.io/blog/2014/04/03/getting-started-with-ruby</id>
-    <content type="html"><![CDATA[<p>I&#39;m self-taught in Ruby. I owe a huge debt to the incredible Ruby community for
-being able to do that. Most of the developers I know do Java or C++ (since
-that&#39;s what they taught in college), and when I told them I was looking for a
-Ruby job a lot of them were curious about the appeal. I have been trying to
-convert them, and I wanted to jot down my path to <del>salvation</del> learn
-Ruby so others could do the same.</p>
-
-<h2>Get a handle on the language</h2>
-
-<p>There are tons of awesome resources on the web for learning Ruby, but my
-favorite for anyone just starting out is
-<a href="http://www.codecademy.com/tracks/ruby">Codecademy</a>. Codecademy has tracks for a
-lot more than just Ruby, and I&#39;ve had a great experience with all of the ones
-I&#39;ve tried. They&#39;re perfect for people who have never programmed Ruby before,
-and I think they would be great for people who have never programmed at all
-before. The tracks get more and more advanced as you go along, so there are
-resources here for people who may have played around with Ruby in the past as
-well, but don&#39;t know the language very well.</p>
-
-<h2>Reach enlightenment</h2>
-
-<p>After getting a feel for the syntax and basic usage of the language, I moved
-onto the <a href="http://rubykoans.com">Ruby Koans</a>. The Koans are a special kind of
-experience. They walk you through different features of the language like your
-own personal Mr. Miyagi. They start to engrain the idea of test-driven
-development while going in-depth on language constructs and the standard
-library.</p>
-
-<h2>Hop on the Rails</h2>
-
-<p>Let&#39;s be real &#8211; people learn Ruby so they can write Rails apps. Yes, Ruby is an
-awesome language in its own right, but that&#39;s not why most people pick it up.
-The absolute best tutorial for a beginner to learn Rails is the one by Michael
-Hartl. You can read his book online for free at
-<a href="http://ruby.railstutorial.org">ruby.railstutorial.org</a>. The source is on
-<a href="https://github.com/railstutorial">Github</a> for easy reference if you make a
-mistake, and there are lots of <a href="http://stackoverflow.com/questions/tagged/railstutorial.org">Stack
-Overflow</a> answers
-to help you along as well. Hartl&#39;s tutorial walks you through building a Twitter
-clone, teaching you Rails, TDD, Twitter Bootstrap, and Heroku along the way. It
-was invaluable for me as a way to really sink your teeth into a real Rails app.</p>
-
-<h2>Bring it home</h2>
-
-<p>After that, you <em>have</em> to start your own project. Tutorials are great, but they
-hold your hand the whole way &#8211; they don&#39;t force you answer any of your own
-questions or come up with your own ideas. If you don&#39;t already have a project
-idea in mind, do what inspired me: find a problem where someone is using an
-Excel spreadsheet and turn it into a web app. My aunt is a chef, and she was
-using Excel to track inventory and expenses, so I turned it into a Rails app.
-The most important thing about the project is that it needs to be something to
-keep you motivated. Motivation is the largest hurdle in learning a new language
-or framework, so you need to be personally invested in solving your problem.</p>
-
-<p>It took me about 8 months of my free time to get to a place where I really felt
-comfortable in Ruby and with Rails, so don&#39;t get discouraged if it takes awhile.
-At the end of the day, Ruby is about <strong>joy</strong>. It&#39;s optimized for you, the
-developer. So have fun with it, and try to improve just a little everyday.</p>
-]]></content>
-  </entry>
   
-  <entry>
-    <title type="html"><![CDATA[I have a blog!]]></title>
-    <link href="http://nwallace.github.io/blog/2014/03/21/i-have-a-blog/"/>
-    <updated>2014-03-21T00:00:00-04:00</updated>
-    <id>http://nwallace.github.io/blog/2014/03/21/i-have-a-blog</id>
-    <content type="html"><![CDATA[<p>Thanks for visiting my blog! This blog is under construction right now, but I will have my first post out soon. :)</p>
-]]></content>
-  </entry>
+  <a class="addthis_button_tweet"></a>
   
-</feed>
+  
+  <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+            </div>
+          
+        
+      </div>
+    
+    <div class="row-fluid">
+      <div class="span12">
+        <p class="meta">
+          
+            <a class="basic-alignment left" href="/blog/2014/04/03/getting-started-with-ruby/" title="Previous Post: Getting Started with Ruby">&laquo; Getting Started with Ruby</a>
+          
+          
+        </p>
+      </div>
+    </div>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+
+        </div>
+        <aside class="span4 sidebar">
+          
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nwallace.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+
+
+          <section>
+  <h3>About</h3>
+  <p>I'm Nathan Wallace, and this is my blog about web development.</p>
+  <p class="clearfix"><a class="pull-right" href="/about">More &rarr;</a></p>
+</section>
+
+          <section>
+  <h3>Recent Posts</h3>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/">Fixing Ruby 2.1.1 on Arch</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/03/getting-started-with-ruby/">Getting Started with Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/21/i-have-a-blog/">I have a blog!</a>
+      </li>
+    
+  </ul>
+</section>
+
+        </aside>
+      </div>
+    </div>
+    <footer class="footer-page" role="contentinfo">
+      <p>
+  Copyright &copy; 2014 - Nathan Wallace -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+
+    </footer>
+  </div>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'nosuchthingastwo';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://nwallace.github.io/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/';
+        var disqus_url = 'http://nwallace.github.io/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
