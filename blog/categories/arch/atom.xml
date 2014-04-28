@@ -4,7 +4,7 @@
   <title><![CDATA[Category: arch | No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/blog/categories/arch/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2014-04-11T12:09:45-04:00</updated>
+  <updated>2014-04-28T18:31:52-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -63,7 +63,7 @@ going to the package page for your architecture. For me, that&#39;s
 <a href="https://www.archlinux.org/packages/extra/x86_64/ruby/">here</a>. On the right side
 of the page, follow the link to view the source files:</p>
 
-<p><img src="/images/posts/package-actions.png" alt="Source Files"></p>
+<p><img src="/images/posts/2014/04/11/package-actions.png" alt="Source Files"></p>
 
 <p>If there are any updates to the source made by the package maintainers, you will
 see patch files for them. In this case, there is one patch file:</p>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ubuntu | No Such Thing as Two]]></title>
+  <link href="http://nwallace.github.io/blog/categories/ubuntu/atom.xml" rel="self"/>
+  <link href="http://nwallace.github.io/"/>
+  <updated>2014-04-28T18:31:52-04:00</updated>
+  <id>http://nwallace.github.io/</id>
+  <author>
+    <name><![CDATA[Nathan Wallace]]></name>
+    <email><![CDATA[nathan@nosuchthingastwo.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Installing StarCraft II on Ubuntu 14.04]]></title>
+    <link href="http://nwallace.github.io/blog/2014/04/28/starcraft-ii-on-ubuntu-14-04/"/>
+    <updated>2014-04-28T00:00:00-04:00</updated>
+    <id>http://nwallace.github.io/blog/2014/04/28/starcraft-ii-on-ubuntu-14-04</id>
+    <content type="html"><![CDATA[<p>I finally decided to make the leap and cleanse myself of all Windows
+installations. I, like so many others, have long been tethered to Windows by
+video games. These days, StarCraft is about the only game I play anymore, and
+since it purportedly <a href="https://appdb.winehq.org/objectManager.php?sClass=version&amp;iId=20882">works great on
+Wine</a>, I
+decided to give it a shot. There were
+<a href="http://jeffhoogland.blogspot.com/2010/07/howto-starcraft-2-on-linux-with-wine.html">some</a>
+<a href="http://www.retrohive.com/2013/09/play-starcraft-ii-linux-ubuntu/">other</a>
+great blog posts that got me most of the way there, but some of that information
+is outdated and gave me problems. I had no need to modify any Wine libraries
+or to lower the Windows version with <code>winecfg</code>. With one small hiccup, it worked
+perfectly by simply installing Wine, the correct dependencies, and the game.</p>
+
+<p>Here&#39;s what worked for me.</p>
+
+<h2>Install Wine and Dependencies</h2>
+
+<ol>
+<li>Install <a href="https://www.winehq.org">Wine</a>:<br>
+<code>$ sudo apt-get install wine</code></li>
+<li>Install some dependencies for StarCraft with <code>winetricks</code>:<br>
+<div class="wrap-code">
+ <code>$ winetricks droid fontfix fontsmooth-rgb gdiplus gecko vcrun2008 vcrun2005
+               allfonts d3dx11_43 win7 ie6</code>
+</div></li>
+</ol>
+
+<h2>Install StarCraft</h2>
+
+<ol>
+<li>Download <a href="http://dist.blizzard.com/downloads/sc2-installers/full/StarCraft-II-Setup-enUS.exe">the installer</a>
+from <a href="https://www.battle.net">Battle.net</a></li>
+<li>Run the installer with Wine to install the game</li>
+</ol>
+
+<h2>Try It Out and Fix Any Issues</h2>
+
+<p>At this point in my installation, I ran the game to try it out, and I had a
+minor problem. The game changed my 1280x720 display to 1920x1080 and caused a
+glitch with my mouse pointer. To fix this problem, I ran <code>winecfg</code> and
+instructed it to emulate a desktop environment at the correct resolution. Worked
+like a charm and also fixes some issues with Alt+Tabbing out of the game.</p>
+
+<p><img src="/images/posts/2014/04/28/dash-winecfg.png" alt="Unity Dash"></p>
+
+<p><img src="/images/posts/2014/04/28/winecfg-vd.png" alt="Winecfg"></p>
+
+<p>If you encounter any other issues, check out the blog posts I mentioned
+previously for some tips
+(<a href="http://jeffhoogland.blogspot.com/2010/07/howto-starcraft-2-on-linux-with-wine.html">here</a>
+and <a href="http://www.retrohive.com/2013/09/play-starcraft-ii-linux-ubuntu/">here</a>).
+If those don&#39;t help you and Google fails you, head over to
+<a href="http://askubuntu.com">AskUbuntu</a> and try to find help there.</p>
+
+<p>With that, I hope you&#39;ve got StarCraft II working on your Linux box! Please
+leave a comment if you run into issues. Most importantly...</p>
+
+<p><img src="/images/posts/2014/04/28/starcraft-battle.png" alt="StarCraft Battle"></p>
+
+<p>glhf!</p>
+]]></content>
+  </entry>
+  
+</feed>
