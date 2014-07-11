@@ -17,12 +17,16 @@
         <lastmod>2014-04-28T18:29:36-04:00</lastmod>
     </url>
     <url>
+        <loc>http://nwallace.github.io/blog/2014/07/10/sql-escapades-over-and-partition-by/</loc>
+        <lastmod>2014-07-10T23:15:51-04:00</lastmod>
+    </url>
+    <url>
         <loc>http://nwallace.github.io/robots.txt</loc>
         <lastmod>2014-03-21T20:15:31-04:00</lastmod>
     </url>
     <url>
         <loc>http://nwallace.github.io/</loc>
-        <lastmod>2014-04-28T18:30:52-04:00</lastmod>
+        <lastmod>2014-07-10T23:15:51-04:00</lastmod>
     </url>
     <url>
         <loc>http://nwallace.github.io/about/</loc>
@@ -30,6 +34,6 @@
     </url>
     <url>
         <loc>http://nwallace.github.io/blog/archives/</loc>
-        <lastmod>2014-04-28T18:30:52-04:00</lastmod>
+        <lastmod>2014-07-10T23:15:51-04:00</lastmod>
     </url>
 </urlset>
