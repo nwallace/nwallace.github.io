@@ -110,6 +110,165 @@
 
   <div class="row-fluid">
     <div class="span12 post-container">
+      <h1 class="link"><a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a></h1>
+      <h5 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2015-01-28T00:00:00-05:00" pubdate data-updated="true">January 28<span>th</span>, 2015</time></h5>
+      
+      <p>Docker! DevOps! Containerization! Buzz words! Containerization is sweeping the
+community like thick-rimmed glasses and JavaScript transpilers. Since I don&#39;t
+want the cool kids to realize I&#39;m a hipster-imposter, I figured I&#39;d better get
+ahead of this trend while it&#39;s still cool.</p>
+
+<p>But where to start?</p>
+
+<h2>Ubuntu Core</h2>
+
+<p>I probably should start learning the basics of Docker first, but Ubuntu just
+released a new spin they&#39;re calling Core. Ubuntu Core, like
+<a href="https://coreos.com/">CoreOS</a> and <a href="http://www.projectatomic.io/">Project
+Atomic</a>, is a Linux distribution optimized for
+running app containers. I chose to try out Ubuntu Core because I just read
+<a href="http://0pointer.net/blog/revisiting-how-we-put-together-linux-systems.html">Lennart Pottering&#39;s blog post about OS
+design</a>
+and heard from <del>some rando on Hacker News</del> a reputable source that
+Ubuntu Core is an early take on that philosophy. It&#39;s got all kinds of
+goodness, including transactional updates, systemd and container runtime
+agnosticism (I have a lot of issues with Docker, and much prefer the promise of
+something like <a href="https://coreos.com/blog/rocket/">Rocket</a>).</p>
+
+<h2>Getting Down and Dirty</h2>
+
+<p>To try it out, download the OVA image from <a href="http://www.ubuntu.com/cloud/tools/snappy#snappy-ova">this
+page</a> and open it with
+<a href="https://www.virtualbox.org/">VirtualBox</a> (login and password both <code>ubuntu</code>).
+There&#39;s a <a href="http://developer.ubuntu.com/en/snappy/#tour">quick overview of Ubuntu
+Core</a> on Ubuntu&#39;s developer site
+that walks you through an introduction to <code>snappy</code>, the tool for managing your
+containers.</p>
+
+<p>The guide explains how to install app containers with Docker. There&#39;s an example
+app for displaying <a href="http://xkcd.com/">xkcd</a> comics. You can install it with:</p>
+
+<p><code>$ sudo snappy install xkcd-webserver</code></p>
+
+<p>The part the guide left out was what the heck that command does! As described
+<a href="http://developer.ubuntu.com/en/snappy/#snap-developers">here</a>, Ubuntu Core
+installs app files in <code>/apps/&lt;package&gt;/&lt;version&gt;</code>, then symlinks
+<code>/apps/&lt;package&gt;/current</code> to the new version (just like Capistrano).</p>
+
+<div class="no-line-numbers">
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ls -l /apps/xkcd-webserver/current
+</span><span class='line'>  =&gt; lrwxrwxrwx 1 clickpkg clickpkg 5 Jan 28 22:01 /apps/xkcd-webserver/current -&gt; 0.3.1
+</span><span class='line'>$ find /apps/xkcd-webserver -type d
+</span><span class='line'>  =&gt; /apps/xkcd-webserver
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/.click
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/.click/triggers
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/.click/updates
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/.click/info
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/www
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/meta
+</span><span class='line'>     /apps/xkcd-webserver/0.3.1/bin</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>Ubuntu Core installs app binaries to <code>/apps/&lt;package&gt;/&lt;version&gt;/bin</code>. If we look
+inside the <code>bin</code> directory for our xkcd app, we&#39;ll find the python script that
+boots up the webserver:</p>
+
+<div class="no-line-numbers">
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ less /apps/xkcd-webserver/current/bin/xkcd-webserver
+</span><span class='line'>  =&gt; !#/usr/bin/python3
+</span><span class='line'>     ...</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>In fact, the OS has already started the app for us:</p>
+
+<div class="no-line-numbers">
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ps aux | grep xkcd
+</span><span class='line'>  =&gt; root ... /usr/bin/python3 /apps/xkcd-webserver/0.3.1/bin/xkcd-webserver</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>To see the app running, set up a port forwarding rule with VirtualBox so you
+can navigate to port 80 on the virtual machine. From the VirtualBox VM Manager,
+click your Ubuntu Core VM on the left and choose &quot;Settings&quot;. Under &quot;Network&quot; &gt;
+&quot;Port Forwarding&quot;, click the plus sign to add a new rule to forward a Host
+port (I chose 8080) to port 80 on the Guest. Then navigate to localhost:8080 in
+your browser to see the app in all its glory.</p>
+
+<p>Congratulations! You&#39;re running Docker apps on Ubuntu Core! Just be careful not
+to tell your boss at work, unless you&#39;re ready to become &quot;the DevOps gal/guy&quot; ;)</p>
+
+      
+      
+      
+        <div class="pull-right row-fluid">
+          
+            <a href="/blog/categories/containers/">
+              <span class="badge">containers</span>
+            </a>
+          
+            <a href="/blog/categories/docker/">
+              <span class="badge">docker</span>
+            </a>
+          
+            <a href="/blog/categories/linux/">
+              <span class="badge">linux</span>
+            </a>
+          
+            <a href="/blog/categories/ubuntu/">
+              <span class="badge">ubuntu</span>
+            </a>
+          
+            <a href="/blog/categories/ubuntu-core/">
+              <span class="badge">ubuntu core</span>
+            </a>
+          
+        </div>
+      
+    </div>
+  </div>
+
+
+
+      </article>
+      
+        <hr>
+      
+  
+    
+      <article>
+        
+
+  <div class="row-fluid">
+    <div class="span12 post-container">
       <h1 class="link"><a href="/blog/2014/07/10/sql-escapades-over-and-partition-by/">SQL Escapades: OVER and PARTITION BY</a></h1>
       <h5 class="date-time">
 
@@ -719,52 +878,10 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
 
       </article>
       
-        <hr>
-      
-  
-    
-      <article>
-        
-
-  <div class="row-fluid">
-    <div class="span12 post-container">
-      <h1 class="link"><a href="/blog/2014/03/21/i-have-a-blog/">I have a blog!</a></h1>
-      <h5 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2014-03-21T00:00:00-04:00" pubdate data-updated="true">March 21<span>st</span>, 2014</time></h5>
-      
-      <p>Thanks for visiting my blog! This blog is under construction right now, but I will have my first post out soon. :)</p>
-
-      
-      
-      
-        <div class="pull-right row-fluid">
-          
-            <a href="/blog/categories/personal/">
-              <span class="badge">personal</span>
-            </a>
-          
-        </div>
-      
-    </div>
-  </div>
-
-
-
-      </article>
-      
   
   <div class="pagination">
+    
+    <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
 
     
@@ -795,6 +912,10 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/07/10/sql-escapades-over-and-partition-by/">SQL Escapades: OVER and PARTITION BY</a>
       </li>
     
@@ -810,10 +931,6 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
         <a href="/blog/2014/04/03/getting-started-with-ruby/">Getting Started with Ruby</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/2014/03/21/i-have-a-blog/">I have a blog!</a>
-      </li>
-    
   </ul>
 </section>
 
@@ -822,7 +939,7 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
     </div>
     <footer class="footer-page" role="contentinfo">
       <p>
-  Copyright &copy; 2014 - Nathan Wallace -
+  Copyright &copy; 2015 - Nathan Wallace -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
