@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2015-03-31T22:24:14-04:00</updated>
+  <updated>2015-03-31T22:45:48-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -18,47 +18,53 @@
     <link href="http://nwallace.github.io/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/"/>
     <updated>2015-03-31T21:48:46-04:00</updated>
     <id>http://nwallace.github.io/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records</id>
-    <content type="html"><![CDATA[<div class="no-line-numbers no-code-title">
-Recently, my pair and I were implementing a search feature for administrators to
-find customer records. In our app, customers can have many "affiliations" with
-external partners, and it's common to search for a customer by their ID in one
+    <content type="html"><![CDATA[<p>Recently, my pair and I were implementing a search feature for administrators to
+find customer records. In our app, customers can have many &quot;affiliations&quot; with
+external partners, and it&#39;s common to search for a customer by their ID in one
 of these external systems. So if an administrator searches with one of these
 external IDs, we want to display the matching ID in the search results so they
-can know they found the right record.
+can know they found the right record.</p>
 
-For example, imagine our database contains two customers, Bob and Alice. Bob has
+<p>For example, imagine our database contains two customers, Bob and Alice. Bob has
 two affiliations, one with ID 1111 and another with ID 2222. When the
-administrator searches for customers with the ID "2222", we want to display the
-following:
+administrator searches for customers with the ID &quot;2222&quot;, we want to display the
+following:</p>
 
+<div class="no-line-numbers no-code-title">
 ```
 Results: (1 of 2)
   Bob (affiliate #2222)
 ```
+</div>
 
-If we're not careful, however, we might easily write our code such that the page
-simply displays Bob's first affiliation number, rather than the one the admin
-was searching for:
+<p>If we&#39;re not careful, however, we might easily write our code such that the page
+simply displays Bob&#39;s first affiliation number, rather than the one the admin
+was searching for:</p>
 
+<div class="no-line-numbers no-code-title">
 ```erb
 <% search_results.each do |customer| %>
   <li><%= customer.name %> (affiliate #<%= customer.affiliations.first.id %>)</li>
 <% end %>
 ```
+</div>
 
+<div class="no-line-numbers no-code-title">
 ```
 Results: (1 of 2)
   Bob (affiliate #1111)
 ```
+</div>
 
-This is confusing! The admin searched for customer with ID 2222, but he got the
-customer with ID 1111. Of course, we could display *all* of the customers'
+<p>This is confusing! The admin searched for customer with ID 2222, but he got the
+customer with ID 1111. Of course, we could display <em>all</em> of the customers&#39;
 affiliations, but that could quickly get unwieldy.  We want to preferentially
 display the ID the administrator searched for so they know they got the right
-customer.
+customer.</p>
 
-We could do this in Ruby, a la:
+<p>We could do this in Ruby, a la:</p>
 
+<div class="no-line-numbers no-code-title">
 ```erb
 <% search_results.each do |customer| %>
   <li>
@@ -67,52 +73,60 @@ We could do this in Ruby, a la:
   </li>
 <% end %>
 ```
+</div>
 
-But that sucks. We can do better!
+<p>But that sucks. We can do better!</p>
 
-Anyone who knows SQL will tell you that what we want to accomplish is easy with
-JOINs:
+<p>Anyone who knows SQL will tell you that what we want to accomplish is easy with
+JOINs:</p>
 
+<div class="no-line-numbers no-code-title">
 ```sql
 SELECT *
 FROM customers c
 INNER JOIN affiliations a ON a.customer_id = c.id
 WHERE a.affiliation_id = '2222';
 ```
+</div>
 
-and ActiveRecord lets us do JOINs:
+<p>and ActiveRecord lets us do JOINs:</p>
 
+<div class="no-line-numbers no-code-title">
 ```ruby
 customer =
   Customer.joins(:affiliations)
           .where(affiliations: { affiliation_id: "2222" })
 ```
+</div>
 
-But look at what happens when we read the customer's affiliations:
+<p>But look at what happens when we read the customer&#39;s affiliations:</p>
 
+<div class="no-line-numbers no-code-title">
 ```ruby
 customer.affiliations
 # => [<Affiliation id: 1, affiliation_id: "1111", ...>,
 #     <Affiliation id: 2, affiliation_id: "2222", ...>]
 ```
+</div>
 
-Despite our `where` clause to filter out the unwanted affiliations, we still
-get all of them when we call `customer.affiliations`.
+<p>Despite our <code>where</code> clause to filter out the unwanted affiliations, we still
+get all of them when we call <code>customer.affiliations</code>.</p>
 
-The problem is that we're missing a piece in our ActiveRecord query. The `joins`
-call allows us to reference affiliations in our `where` call, but ActiveRecord
+<p>The problem is that we&#39;re missing a piece in our ActiveRecord query. The <code>joins</code>
+call allows us to reference affiliations in our <code>where</code> call, but ActiveRecord
 will only instantiate Customer records from the query results. So when we call
-`affiliations` on the Customer instance, ActiveRecord will go query the database
-again without our `WHERE` clause from before.
+<code>affiliations</code> on the Customer instance, ActiveRecord will go query the database
+again without our <code>WHERE</code> clause from before.</p>
 
-To get only the associated records we want, we can leverage another method in
-ActiveRecord: `includes`
+<p>To get only the associated records we want, we can leverage another method in
+ActiveRecord: <code>includes</code></p>
 
-As you may know, `includes` is a method that allows us to ["eager load"][1]
-associated records. This method is usually employed to avoid the ["N+1 queries"
-problem][2], but we can use it here to basically trick ActiveRecord into
-retrieving only a subset of the customer's affiliations:
+<p>As you may know, <code>includes</code> is a method that allows us to <a href="http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations">&quot;eager load&quot;</a>
+associated records. This method is usually employed to avoid the <a href="https://secure.phabricator.com/book/phabcontrib/article/n_plus_one/">&quot;N+1 queries&quot;
+problem</a>, but we can use it here to basically trick ActiveRecord into
+retrieving only a subset of the customer&#39;s affiliations:</p>
 
+<div class="no-line-numbers no-code-title">
 ```ruby
 customer =
   Customer.joins(:affiliations)
@@ -122,18 +136,18 @@ customer =
 customer.affiliations
 # => [<Affiliation id: 2, affiliation_id: "2222", ...>]
 ```
-
-It works! We get all the customers with affiliations matching the given id, and
-we didn't get any of the other affiliations of the customer.
-
-The reason this works is that `includes` tells ActiveRecord to instantiate the
-customer's affiliations association using the data included via the `JOIN`
-clause in the query.  ActiveRecord will do and then cache the associated records
-so that when you call `affiliations` on a Customer it does not query the
-database again. This caching behavior is what allows `includes` to address the
-N+1 problem and also what allows us to retrieve only a subset of a record's
-association.
 </div>
+
+<p>It works! We get all the customers with affiliations matching the given id, and
+we didn&#39;t get any of the other affiliations of the customer.</p>
+
+<p>The reason this works is that <code>includes</code> tells ActiveRecord to instantiate the
+customer&#39;s affiliations association using the data included via the <code>JOIN</code>
+clause in the query.  ActiveRecord will do and then cache the associated records
+so that when you call <code>affiliations</code> on a Customer it does not query the
+database again. This caching behavior is what allows <code>includes</code> to address the
+N+1 problem and also what allows us to retrieve only a subset of a record&#39;s
+association.</p>
 ]]></content>
   </entry>
   
