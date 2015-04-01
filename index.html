@@ -110,6 +110,194 @@
 
   <div class="row-fluid">
     <div class="span12 post-container">
+      <h1 class="link"><a href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/">Including Only a Subset of Associated Records in ActiveRecord</a></h1>
+      <h5 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2015-03-31T21:48:46-04:00" pubdate data-updated="true">March 31<span>st</span>, 2015</time></h5>
+      
+      <div class="no-line-numbers no-code-title">
+Recently, my pair and I were implementing a search feature for administrators to
+find customer records. In our app, customers can have many &#8220;affiliations&#8221; with
+external partners, and it&#8217;s common to search for a customer by their ID in one
+of these external systems. So if an administrator searches with one of these
+external IDs, we want to display the matching ID in the search results so they
+can know they found the right record.
+
+For example, imagine our database contains two customers, Bob and Alice. Bob has
+two affiliations, one with ID 1111 and another with ID 2222. When the
+administrator searches for customers with the ID &#8220;2222&#8221;, we want to display the
+following:
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Results: (1 of 2)
+</span><span class='line'>  Bob (affiliate #2222)</span></code></pre></td></tr></table></div></figure>
+
+If we&#8217;re not careful, however, we might easily write our code such that the page
+simply displays Bob&#8217;s first affiliation number, rather than the one the admin
+was searching for:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%</span> <span class="n">search_results</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">customer</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">customer</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x"> (affiliate #</span><span class="cp">&lt;%=</span> <span class="n">customer</span><span class="o">.</span><span class="n">affiliations</span><span class="o">.</span><span class="n">first</span><span class="o">.</span><span class="n">id</span> <span class="cp">%&gt;</span><span class="x">)&lt;/li&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">Results: (1 of 2)</span>
+</span><span class='line'><span class="x">  Bob (affiliate #1111)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+This is confusing! The admin searched for customer with ID 2222, but he got the
+customer with ID 1111. Of course, we could display *all* of the customers&#8217;
+affiliations, but that could quickly get unwieldy.  We want to preferentially
+display the ID the administrator searched for so they know they got the right
+customer.
+
+We could do this in Ruby, a la:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%</span> <span class="n">search_results</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">customer</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;li&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">customer</span><span class="o">.</span><span class="n">name</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    (affiliate #</span><span class="cp">&lt;%=</span> <span class="n">customer</span><span class="o">.</span><span class="n">affiliations</span><span class="o">.</span><span class="n">find</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span> <span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="o">=~</span> <span class="sr">/</span><span class="si">#{</span><span class="n">params</span><span class="o">[</span><span class="ss">:affiliate_id</span><span class="o">]</span><span class="si">}</span><span class="sr">/</span> <span class="p">}</span> <span class="cp">%&gt;</span><span class="x">)</span>
+</span><span class='line'><span class="x">  &lt;/li&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+But that sucks. We can do better!
+
+Anyone who knows SQL will tell you that what we want to accomplish is easy with
+JOINs:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span>
+</span><span class='line'><span class="k">FROM</span> <span class="n">customers</span> <span class="k">c</span>
+</span><span class='line'><span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">affiliations</span> <span class="n">a</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">id</span>
+</span><span class='line'><span class="k">WHERE</span> <span class="n">a</span><span class="p">.</span><span class="n">affiliation_id</span> <span class="o">=</span> <span class="s1">&#39;2222&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+and ActiveRecord lets us do JOINs:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">customer</span> <span class="o">=</span>
+</span><span class='line'>  <span class="no">Customer</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:affiliations</span><span class="p">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">affiliations</span><span class="p">:</span> <span class="p">{</span> <span class="n">affiliation_id</span><span class="p">:</span> <span class="s2">&quot;2222&quot;</span> <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+But look at what happens when we read the customer&#8217;s affiliations:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">customer</span><span class="o">.</span><span class="n">affiliations</span>
+</span><span class='line'><span class="c1"># =&gt; [&lt;Affiliation id: 1, affiliation_id: &quot;1111&quot;, ...&gt;,</span>
+</span><span class='line'><span class="c1">#     &lt;Affiliation id: 2, affiliation_id: &quot;2222&quot;, ...&gt;]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+Despite our `where` clause to filter out the unwanted affiliations, we still
+get all of them when we call `customer.affiliations`.
+
+The problem is that we&#8217;re missing a piece in our ActiveRecord query. The `joins`
+call allows us to reference affiliations in our `where` call, but ActiveRecord
+will only instantiate Customer records from the query results. So when we call
+`affiliations` on the Customer instance, ActiveRecord will go query the database
+again without our `WHERE` clause from before.
+
+To get only the associated records we want, we can leverage another method in
+ActiveRecord: `includes`
+
+As you may know, `includes` is a method that allows us to [&#8220;eager load&#8221;][1]
+associated records. This method is usually employed to avoid the [&#8220;N+1 queries&#8221;
+problem][2], but we can use it here to basically trick ActiveRecord into
+retrieving only a subset of the customer&#8217;s affiliations:
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">customer</span> <span class="o">=</span>
+</span><span class='line'>  <span class="no">Customer</span><span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:affiliations</span><span class="p">)</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">affiliations</span><span class="p">:</span> <span class="p">{</span> <span class="n">affiliation_id</span><span class="p">:</span> <span class="s2">&quot;2222&quot;</span> <span class="p">})</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:affiliations</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">customer</span><span class="o">.</span><span class="n">affiliations</span>
+</span><span class='line'><span class="c1"># =&gt; [&lt;Affiliation id: 2, affiliation_id: &quot;2222&quot;, ...&gt;]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+It works! We get all the customers with affiliations matching the given id, and
+we didn&#8217;t get any of the other affiliations of the customer.
+
+The reason this works is that `includes` tells ActiveRecord to instantiate the
+customer&#8217;s affiliations association using the data included via the `JOIN`
+clause in the query.  ActiveRecord will do and then cache the associated records
+so that when you call `affiliations` on a Customer it does not query the
+database again. This caching behavior is what allows `includes` to address the
+N+1 problem and also what allows us to retrieve only a subset of a record&#8217;s
+association.
+</div>
+
+      
+      
+      
+        <div class="pull-right row-fluid">
+          
+            <a href="/blog/categories/active-record/">
+              <span class="badge">active record</span>
+            </a>
+          
+            <a href="/blog/categories/rails/">
+              <span class="badge">rails</span>
+            </a>
+          
+            <a href="/blog/categories/ruby/">
+              <span class="badge">ruby</span>
+            </a>
+          
+        </div>
+      
+    </div>
+  </div>
+
+
+
+      </article>
+      
+        <hr>
+      
+  
+    
+      <article>
+        
+
+  <div class="row-fluid">
+    <div class="span12 post-container">
       <h1 class="link"><a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a></h1>
       <h5 class="date-time">
 
@@ -318,7 +506,7 @@ together with data from individual rows. For example, if you want to return all
 sales records and (for some reason) the total revenue of all sales with each
 record, you could do this:</p>
 
-<div class="no-line-numbers">
+<div class="no-line-numbers no-code-title">
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span><span class="p">,</span> <span class="k">sum</span><span class="p">(</span><span class="n">price</span><span class="p">)</span> <span class="n">OVER</span><span class="p">()</span> <span class="k">AS</span> <span class="n">total_revenue</span>
@@ -338,7 +526,7 @@ the table grouped by the the given partitioning column.</p>
 <p>So say we want to get revenue subtotals by year instead of a grand total for
 our sales records. In Postgres we could to this:</p>
 
-<div class="no-line-numbers">
+<div class="no-line-numbers no-code-title">
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span><span class="p">,</span> <span class="k">sum</span><span class="p">(</span><span class="n">price</span><span class="p">)</span> <span class="n">OVER</span><span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">date_part</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">created_at</span><span class="p">))</span> <span class="k">AS</span> <span class="n">monthly_subtotal</span>
@@ -769,115 +957,6 @@ manager to use Ruby 2.1.1.</p>
 
       </article>
       
-        <hr>
-      
-  
-    
-      <article>
-        
-
-  <div class="row-fluid">
-    <div class="span12 post-container">
-      <h1 class="link"><a href="/blog/2014/04/03/getting-started-with-ruby/">Getting Started with Ruby</a></h1>
-      <h5 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2014-04-03T04:26:00-04:00" pubdate data-updated="true">April 3<span>rd</span>, 2014</time></h5>
-      
-      <p>I&#39;m self-taught in Ruby. I owe a huge debt to the incredible Ruby community for
-being able to do that. Most of the developers I know do Java or C++ (since
-that&#39;s what they taught in college), and when I told them I was looking for a
-Ruby job a lot of them were curious about the appeal. I have been trying to
-convert them, and I wanted to jot down my path to <del>salvation</del> learn
-Ruby so others could do the same.</p>
-
-<h2>Get a handle on the language</h2>
-
-<p>There are tons of awesome resources on the web for learning Ruby, but my
-favorite for anyone just starting out is
-<a href="http://www.codecademy.com/tracks/ruby">Codecademy</a>. Codecademy has tracks for a
-lot more than just Ruby, and I&#39;ve had a great experience with all of the ones
-I&#39;ve tried. They&#39;re perfect for people who have never programmed Ruby before,
-and I think they would be great for people who have never programmed at all
-before. The tracks get more and more advanced as you go along, so there are
-resources here for people who may have played around with Ruby in the past as
-well, but don&#39;t know the language very well.</p>
-
-<h2>Reach enlightenment</h2>
-
-<p>After getting a feel for the syntax and basic usage of the language, I moved
-onto the <a href="http://rubykoans.com">Ruby Koans</a>. The Koans are a special kind of
-experience. They walk you through different features of the language like your
-own personal Mr. Miyagi. They start to engrain the idea of test-driven
-development while going in-depth on language constructs and the standard
-library.</p>
-
-<h2>Hop on the Rails</h2>
-
-<p>Let&#39;s be real &#8211; people learn Ruby so they can write Rails apps. Yes, Ruby is an
-awesome language in its own right, but that&#39;s not why most people pick it up.
-The absolute best tutorial for a beginner to learn Rails is the one by Michael
-Hartl. You can read his book online for free at
-<a href="http://ruby.railstutorial.org">ruby.railstutorial.org</a>. The source is on
-<a href="https://github.com/railstutorial">Github</a> for easy reference if you make a
-mistake, and there are lots of <a href="http://stackoverflow.com/questions/tagged/railstutorial.org">Stack
-Overflow</a> answers
-to help you along as well. Hartl&#39;s tutorial walks you through building a Twitter
-clone, teaching you Rails, TDD, Twitter Bootstrap, and Heroku along the way. It
-was invaluable for me as a way to really sink your teeth into a real Rails app.</p>
-
-<h2>Bring it home</h2>
-
-<p>After that, you <em>have</em> to start your own project. Tutorials are great, but they
-hold your hand the whole way &#8211; they don&#39;t force you answer any of your own
-questions or come up with your own ideas. If you don&#39;t already have a project
-idea in mind, do what inspired me: find a problem where someone is using an
-Excel spreadsheet and turn it into a web app. My aunt is a chef, and she was
-using Excel to track inventory and expenses, so I turned it into a Rails app.
-The most important thing about the project is that it needs to be something to
-keep you motivated. Motivation is the largest hurdle in learning a new language
-or framework, so you need to be personally invested in solving your problem.</p>
-
-<p>It took me about 8 months of my free time to get to a place where I really felt
-comfortable in Ruby and with Rails, so don&#39;t get discouraged if it takes awhile.
-At the end of the day, Ruby is about <strong>joy</strong>. It&#39;s optimized for you, the
-developer. So have fun with it, and try to improve just a little everyday.</p>
-
-      
-      
-      
-        <div class="pull-right row-fluid">
-          
-            <a href="/blog/categories/careers/">
-              <span class="badge">careers</span>
-            </a>
-          
-            <a href="/blog/categories/for-beginners/">
-              <span class="badge">for beginners</span>
-            </a>
-          
-            <a href="/blog/categories/ruby/">
-              <span class="badge">ruby</span>
-            </a>
-          
-        </div>
-      
-    </div>
-  </div>
-
-
-
-      </article>
-      
   
   <div class="pagination">
     
@@ -912,6 +991,10 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/">Including Only a Subset of Associated Records in ActiveRecord</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a>
       </li>
     
@@ -925,10 +1008,6 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
     
       <li class="post">
         <a href="/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/">Fixing Ruby 2.1.1 on Arch</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/03/getting-started-with-ruby/">Getting Started with Ruby</a>
       </li>
     
   </ul>

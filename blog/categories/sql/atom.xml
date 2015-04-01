@@ -4,7 +4,7 @@
   <title><![CDATA[Category: sql | No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/blog/categories/sql/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2015-01-28T23:22:37-05:00</updated>
+  <updated>2015-03-31T22:24:14-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -50,7 +50,7 @@ together with data from individual rows. For example, if you want to return all
 sales records and (for some reason) the total revenue of all sales with each
 record, you could do this:</p>
 
-<div class="no-line-numbers">
+<div class="no-line-numbers no-code-title">
 ```sql
 SELECT *, sum(price) OVER() AS total_revenue
 FROM   sales
@@ -69,7 +69,7 @@ the table grouped by the the given partitioning column.</p>
 <p>So say we want to get revenue subtotals by year instead of a grand total for
 our sales records. In Postgres we could to this:</p>
 
-<div class="no-line-numbers">
+<div class="no-line-numbers no-code-title">
 ```sql
 SELECT *, sum(price) OVER(PARTITION BY date_part('year', created_at)) AS monthly_subtotal
 FROM   sales

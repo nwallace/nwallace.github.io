@@ -159,7 +159,7 @@ together with data from individual rows. For example, if you want to return all
 sales records and (for some reason) the total revenue of all sales with each
 record, you could do this:</p>
 
-<div class="no-line-numbers">
+<div class="no-line-numbers no-code-title">
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span><span class="p">,</span> <span class="k">sum</span><span class="p">(</span><span class="n">price</span><span class="p">)</span> <span class="n">OVER</span><span class="p">()</span> <span class="k">AS</span> <span class="n">total_revenue</span>
@@ -179,7 +179,7 @@ the table grouped by the the given partitioning column.</p>
 <p>So say we want to get revenue subtotals by year instead of a grand total for
 our sales records. In Postgres we could to this:</p>
 
-<div class="no-line-numbers">
+<div class="no-line-numbers no-code-title">
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span><span class="p">,</span> <span class="k">sum</span><span class="p">(</span><span class="n">price</span><span class="p">)</span> <span class="n">OVER</span><span class="p">(</span><span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">date_part</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="n">created_at</span><span class="p">))</span> <span class="k">AS</span> <span class="n">monthly_subtotal</span>
@@ -320,6 +320,10 @@ below if you&#39;ve got other ideas!</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/">Including Only a Subset of Associated Records in ActiveRecord</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a>
       </li>
     
@@ -333,10 +337,6 @@ below if you&#39;ve got other ideas!</p>
     
       <li class="post">
         <a href="/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/">Fixing Ruby 2.1.1 on Arch</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/03/getting-started-with-ruby/">Getting Started with Ruby</a>
       </li>
     
   </ul>
