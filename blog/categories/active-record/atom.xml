@@ -4,7 +4,7 @@
   <title><![CDATA[Category: active record | No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/blog/categories/active-record/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2015-03-31T22:45:48-04:00</updated>
+  <updated>2015-04-20T21:51:11-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Including Only a Subset of Associated Records in ActiveRecord]]></title>
     <link href="http://nwallace.github.io/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/"/>
-    <updated>2015-03-31T21:48:46-04:00</updated>
+    <updated>2015-03-31T00:00:00-04:00</updated>
     <id>http://nwallace.github.io/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records</id>
     <content type="html"><![CDATA[<p>Recently, my pair and I were implementing a search feature for administrators to
 find customer records. In our app, customers can have many &quot;affiliations&quot; with

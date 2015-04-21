@@ -110,6 +110,258 @@
 
   <div class="row-fluid">
     <div class="span12 post-container">
+      <h1 class="link"><a href="/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/">Fixing Ruby 2.1.1 on Arch</a></h1>
+      <h5 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2014-04-11T00:00:00-04:00" pubdate data-updated="true">April 11<span>th</span>, 2014</time></h5>
+      
+      <p>I recently tried to install Ruby 2.1.1 on my <a href="http://www.archlinux.org">Arch</a>
+box with <a href="https://github.com/postmodern/ruby-install"><code>ruby-install</code></a>.
+Unfortunately, <a href="https://www.ruby-forum.com/topic/4486950">there&#39;s a bug</a> on Arch
+Linux in the current stable build (2.1.1p76).</p>
+
+<div class="no-line-numbers">
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ruby-install ruby 2.1.1
+</span><span class='line'>  ...
+</span><span class='line'>  make[2]: Entering directory '~/src/ruby-2.1.1/ext/readline'
+</span><span class='line'>  compiling readline.c
+</span><span class='line'>  readline.c: In function ‘Init_readline’:
+</span><span class='line'>  readline.c:1977:26: error: ‘Function’ undeclared (first use in this function)
+</span><span class='line'>       rl_pre_input_hook = (Function *)readline_pre_input_hook;
+</span><span class='line'>                            ^
+</span><span class='line'>  readline.c:1977:26: note: each undeclared identifier is reported only once for each function it appears in
+</span><span class='line'>  readline.c:1977:36: error: expected expression before ‘)’ token
+</span><span class='line'>       rl_pre_input_hook = (Function *)readline_pre_input_hook;
+</span><span class='line'>                                      ^
+</span><span class='line'>  readline.c: At top level:
+</span><span class='line'>  readline.c:634:1: warning: ‘readline_pre_input_hook’ defined but not used [-Wunused-function]
+</span><span class='line'>   readline_pre_input_hook(void)
+</span><span class='line'>   ^
+</span><span class='line'>  Makefile:228: recipe for target 'readline.o' failed
+</span><span class='line'>  make[2]: *** [readline.o] Error 1
+</span><span class='line'>  make[2]: Leaving directory '~/src/ruby-2.1.1/ext/readline'
+</span><span class='line'>  exts.mk:198: recipe for target 'ext/readline/all' failed
+</span><span class='line'>  make[1]: *** [ext/readline/all] Error 2
+</span><span class='line'>  make[1]: Leaving directory '~/src/ruby-2.1.1'
+</span><span class='line'>  uncommon.mk:180: recipe for target 'build-ext' failed
+</span><span class='line'>  make: *** [build-ext] Error 2
+</span><span class='line'>  !!! Compiling ruby 2.1.1 failed!</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>The bug is fixed in trunk, but the fix has not yet been released. Of course, if
+you have a system Ruby installed on Arch, you&#39;ll see that it&#39;s version is 2.1.1.
+So how did the Arch package manage to compile 2.1.1 in spite of this bug?</p>
+
+<p>The Arch team makes it easy to find the answer to this question. We can view the
+package from the Arch repos and see what patches they have applied. Start off by
+going to the package page for your architecture. For me, that&#39;s
+<a href="https://www.archlinux.org/packages/extra/x86_64/ruby/">here</a>. On the right side
+of the page, follow the link to view the source files:</p>
+
+<p><img src="/images/posts/2014/04/11/package-actions.png" alt="Source Files"></p>
+
+<p>If there are any updates to the source made by the package maintainers, you will
+see patch files for them. In this case, there is one patch file:</p>
+
+<figure class='code'><figcaption><span>0001-Fix-undeclared-identifier-error-by-using-the-actual-.patch</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>From 4c4da3fc650a3595ecc06f49072f1ffae07db706 Mon Sep 17 00:00:00 2001
+</span><span class='line'>From: Thomas Dziedzic &lt;gostrc@gmail.com&gt;
+</span><span class='line'>Date: Sat, 1 Mar 2014 21:41:28 -0800
+</span><span class='line'>Subject: [PATCH] Fix undeclared identifier error by using the actual type of
+</span><span class='line'> rl_pre_input_hook
+</span><span class='line'>
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'> ext/readline/readline.c | 2 +-
+</span><span class='line'> 1 file changed, 1 insertion(+), 1 deletion(-)
+</span><span class='line'>
+</span><span class='line'><span class="gh">diff --git a/ext/readline/readline.c b/ext/readline/readline.c</span>
+</span><span class='line'><span class="gh">index 659adb9..7bc0eed 100644</span>
+</span><span class='line'><span class="gd">--- a/ext/readline/readline.c</span>
+</span><span class='line'><span class="gi">+++ b/ext/readline/readline.c</span>
+</span><span class='line'><span class="gu">@@ -1974,7 +1974,7 @@ Init_readline()</span>
+</span><span class='line'>
+</span><span class='line'>     rl_attempted_completion_function = readline_attempted_completion_function;
+</span><span class='line'> #if defined(HAVE_RL_PRE_INPUT_HOOK)
+</span><span class='line'><span class="gd">-    rl_pre_input_hook = (Function *)readline_pre_input_hook;</span>
+</span><span class='line'><span class="gi">+    rl_pre_input_hook = (rl_hook_func_t *)readline_pre_input_hook;</span>
+</span><span class='line'> #endif
+</span><span class='line'> #ifdef HAVE_RL_CATCH_SIGNALS
+</span><span class='line'>     rl_catch_signals = 0;
+</span><span class='line'><span class="gd">-- </span>
+</span><span class='line'>1.9.0
+</span></code></pre></td></tr></table></div></figure>
+
+<p>As you can see, this patch fixes the bug we saw when compiling Ruby. We can use
+this patch file with <code>ruby-install</code> to fix the bug! There&#39;s just one little fix
+to apply: the line numbers in the patch file don&#39;t match the line number from
+our compilation error. The compile error reported a problem on line 1977, but
+this patch applies the change to line 1974. All we have to do is update the
+patch to apply to the correct line. Create a patch file on your computer. Paste
+in the patch from the Arch package, and update the line number.  Your file
+should look like this:</p>
+
+<figure class='code'><figcaption><span>fix-readline.patch</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>From 4c4da3fc650a3595ecc06f49072f1ffae07db706 Mon Sep 17 00:00:00 2001
+</span><span class='line'>From: Thomas Dziedzic &lt;gostrc@gmail.com&gt;
+</span><span class='line'>Date: Sat, 1 Mar 2014 21:41:28 -0800
+</span><span class='line'>Subject: [PATCH] Fix undeclared identifier error by using the actual type of
+</span><span class='line'> rl_pre_input_hook
+</span><span class='line'>
+</span><span class='line'><span class="gd">---</span>
+</span><span class='line'> ext/readline/readline.c | 2 +-
+</span><span class='line'> 1 file changed, 1 insertion(+), 1 deletion(-)
+</span><span class='line'>
+</span><span class='line'><span class="gh">diff --git a/ext/readline/readline.c b/ext/readline/readline.c</span>
+</span><span class='line'><span class="gh">index 659adb9..7bc0eed 100644</span>
+</span><span class='line'><span class="gd">--- a/ext/readline/readline.c</span>
+</span><span class='line'><span class="gi">+++ b/ext/readline/readline.c</span>
+</span><span class='line'><span class="gu">@@ -1977,7 +1977,7 @@ Init_readline()</span>
+</span><span class='line'>
+</span><span class='line'>     rl_attempted_completion_function = readline_attempted_completion_function;
+</span><span class='line'> #if defined(HAVE_RL_PRE_INPUT_HOOK)
+</span><span class='line'><span class="gd">-    rl_pre_input_hook = (Function *)readline_pre_input_hook;</span>
+</span><span class='line'><span class="gi">+    rl_pre_input_hook = (rl_hook_func_t *)readline_pre_input_hook;</span>
+</span><span class='line'> #endif
+</span><span class='line'> #ifdef HAVE_RL_CATCH_SIGNALS
+</span><span class='line'>     rl_catch_signals = 0;
+</span><span class='line'><span class="gd">-- </span>
+</span><span class='line'>1.9.0
+</span></code></pre></td></tr></table></div></figure>
+
+<p>Now, we can finish intalling Ruby 2.1.1! Just tell ruby-install to use the patch
+file we just created:</p>
+
+<p><code>$ ruby-install -p path/to/fix-readline.patch ruby 2.1.1</code></p>
+
+<p>The installation should succeed, and you can now use your favorite Ruby version
+manager to use Ruby 2.1.1.</p>
+
+      
+      
+      
+        <div class="pull-right row-fluid">
+          
+            <a href="/blog/categories/arch/">
+              <span class="badge">arch</span>
+            </a>
+          
+            <a href="/blog/categories/bugs/">
+              <span class="badge">bugs</span>
+            </a>
+          
+            <a href="/blog/categories/linux/">
+              <span class="badge">linux</span>
+            </a>
+          
+            <a href="/blog/categories/ruby/">
+              <span class="badge">ruby</span>
+            </a>
+          
+            <a href="/blog/categories/ruby-install/">
+              <span class="badge">ruby-install</span>
+            </a>
+          
+        </div>
+      
+    </div>
+  </div>
+
+
+
+      </article>
+      
+        <hr>
+      
+  
+    
+      <article>
+        
+
+  <div class="row-fluid">
+    <div class="span12 post-container">
       <h1 class="link"><a href="/blog/2014/04/03/getting-started-with-ruby/">Getting Started with Ruby</a></h1>
       <h5 class="date-time">
 
@@ -288,6 +540,10 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/20/rspec-macros/">RSpec Macros</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/">Including Only a Subset of Associated Records in ActiveRecord</a>
       </li>
     
@@ -301,10 +557,6 @@ developer. So have fun with it, and try to improve just a little everyday.</p>
     
       <li class="post">
         <a href="/blog/2014/04/28/starcraft-ii-on-ubuntu-14-04/">Installing StarCraft II on Ubuntu 14.04</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/04/11/fixing-ruby-2-1-1-on-arch/">Fixing Ruby 2.1.1 on Arch</a>
       </li>
     
   </ul>

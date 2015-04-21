@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>RSpec Macros - No Such Thing as Two</title>
+  <meta name="author" content="Nathan Wallace">
+
+   
+  <meta name="description" content="A blog about Ruby!">
+  
+  <meta name="keywords" content="">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nwallace.github.io/blog/2015/04/20/rspec-macros">
+  <link href="/favicon.png" rel="icon">
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic|Ubuntu+Mono:400,700,400italic|Open+Sans:300italic,700italic,300,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Averia+Sans+Libre:300,400,700,300italic,400italic,700italic|Roboto+Condensed:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="No Such Thing as Two" type="application/atom+xml">
+  <script src="/js/jquery.js"></script>
+  <script src="/js/bootstrap-collapse.js"></script>
+  <script src="/js/modernizr-2.0.js"></script>
+  <script src="/js/octopress.js" type="text/javascript"></script>
+  <script src="/js/application.js"></script>
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-49639013-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header id="title-banner">
+  <div id="banner-brand">
+    <div class="container">
+      <a href="/" title="No Such Thing as Two">No Such Thing as Two</a>
+      <h3 class="tagline">0011110000110011</h3>
+    </div>
+  </div>
+  <div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="fui-menu-24"></span>
+        </a>
+        <div class="nav-collapse collapse navbar-responsive-collapse" style="height:0;">
+          <ul class="nav">
+  <li >
+    <a href="/" title="0011110000110011">
+      <i class="icon-home social-navbar"></i>
+    </a>
+  </li>
+  <!---->
+</ul>
+
+<ul class="nav pull-right">
+  
+  <li><a href="http://github.com/nwallace" title="Github Profile"><i class="icon-github-sign social-navbar"></i></a></li>
+  
+  
+  
+  <li><a href="http://twitter.com/nosuchthingas2" title="Twitter Profile"><i class="icon-twitter-sign social-navbar"></i></a></li>
+  
+  
+  
+  <li><a href="http://linkedin.com/pub/nathan-wallace/32/40a/352" title="Linkedin Profile"><i class="icon-linkedin-sign social-navbar"></i></a></li>
+  
+  
+  
+  
+  <li><a href="mailto:nathan@nosuchthingastwo.com" title="Email"><i class="icon-envelope social-navbar"></i></a></li>
+  
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <div class="container" id="main">
+    <div class="row-fluid">
+      <div id="content">
+        <div class="span8">
+          <div>
+<article class="hentry" role="article">
+  
+
+  <header>
+    <div class="jumbotron">
+      RSpec Macros
+      <h5>
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2015-04-20T00:00:00-04:00" pubdate data-updated="true">April 20<span>th</span>, 2015</time></h5>
+    </div>
+  </header>
+  <div class="row-fluid">
+    <div class="span12">
+      <p>Nobody likes writing boilerplate. It&#39;s repetitive, slow, and just plain boring.
+One of the first rules new programmers learn is not to repeat themselves. We do
+a good job upholding this principle in our app code, but unit tests are a
+different story. In unit tests, it&#39;s often preferable <em>not</em> to write DRY code.
+We prefer explicitness and clarity to malleability and reusability.</p>
+
+<p>Usually.</p>
+
+<p>As with all rules in software development, I believe there are exceptions to
+this rule. Consider authentication. For every route in your app that requires
+authentication, you need to write a controller test to assert that an
+unauthenticated user does not have access. I write those tests something like
+this (as described <a href="https://www.relishapp.com/rspec/rspec-rails/v/3-2/docs/controller-specs">here</a>).</p>
+
+<div class="no-line-numbers">
+<figure class='code'><figcaption><span>spec/controllers/secrets_controller_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">describe</span> <span class="no">SecretsController</span> <span class="k">do</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;GET index&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;requires the user be signed in&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">get</span> <span class="ss">:index</span>
+</span><span class='line'>      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span> <span class="n">new_session_path</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>I&#39;ve written controller tests exactly like this at least a hundred times over
+the past couple of years, and you know what I realized? It&#39;s just
+<strong>boilerplate</strong>. It took me a long time to even consider those repetitive tests
+duplication (they&#39;re testing different application code, after all), but there
+comes a point when the repetition becomes hard to ignore.</p>
+
+<p>I wanted a way to simply declare that my controller action should require the
+user to be authenticated, rather than imperatively (and incessantly) writing out
+that same unit test again.</p>
+
+<p>I want to write code like this:</p>
+
+<div class="no-line-numbers">
+<figure class='code'><figcaption><span>spec/controllers/secrets_controller_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">describe</span> <span class="no">SecretsController</span> <span class="k">do</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;GET index&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it_requires_the_user_be_signed_in</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>We could accomplish something similar with <a href="http://www.relishapp.com/rspec/rspec-core/v/3-2/docs/example-groups/shared-examples">shared examples</a>, but the
+language isn&#39;t as expressive as I want. Could we define the method we want
+ourselves?</p>
+
+<h2>Parsing the HTTP method and controller action</h2>
+
+<p>Our method will need to send the right HTTP request to the right endpoint, then
+assert that the controller sent us to the sign in page. Due to my consistent
+organization of my controller specs, by the time we call
+<code>it_requires_the_user_be_signed_in</code>, we&#39;ve already written the name of the
+controller, the HTTP method and the controller action in our descriptions.</p>
+
+<p>We can get this information out of RSpec&#39;s <code>current_example</code> method within an
+example:</p>
+
+<div class="no-line-numbers no-code-title">
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">describe</span> <span class="no">SomeClass</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;some description&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;can introspect its own metadata&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">expect</span><span class="p">(</span><span class="no">RSpec</span><span class="o">.</span><span class="n">current_example</span><span class="o">.</span><span class="n">metadata</span><span class="o">[</span><span class="ss">:example_group</span><span class="o">][</span><span class="ss">:description</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>        <span class="o">.</span><span class="n">to</span> <span class="n">eq</span> <span class="s2">&quot;some description&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'> <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<h2>A simple macro</h2>
+
+<p>RSpec also makes it easy to make extra methods available within an example. But
+in this case, we want the method <code>it_requires_the_user_be_signed_in</code> to be
+available outside the example blocks. The only way I know to accompish this is
+to define the method globally. For organizational purposes, I like to define a
+module and include that module into the global namespace in the appropriate
+<code>*_helper.rb</code> file:</p>
+
+<div class="no-line-numbers">
+<figure class='code'><figcaption><span>spec/support/macros.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">Macros</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">it_requires_the_user_be_signed_in</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s2">&quot;requires the user be signed in&quot;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">http_method</span><span class="p">,</span> <span class="n">controller_action</span> <span class="o">=</span> <span class="p">(</span>
+</span><span class='line'>        <span class="no">RSpec</span><span class="o">.</span><span class="n">current_example</span><span class="o">.</span><span class="n">metadata</span><span class="o">[</span><span class="ss">:example_group</span><span class="o">][</span><span class="ss">:description</span><span class="o">]</span>
+</span><span class='line'>          <span class="o">.</span><span class="n">downcase</span><span class="o">.</span><span class="n">split</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_sym</span><span class="p">)</span>
+</span><span class='line'>      <span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">public_send</span><span class="p">(</span><span class="n">http_method</span><span class="p">,</span> <span class="n">controller_action</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">expect</span><span class="p">(</span><span class="n">response</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">redirect_to</span> <span class="n">new_session_path</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<div class="no-line-numbers">
+<figure class='code'><figcaption><span>spec/rails_helper.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># ...</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;spec/support/**/*.rb&quot;</span><span class="p">)</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>  <span class="c1"># ...</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="kp">include</span> <span class="no">Macros</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>With that in place, we&#39;ve implemented the interface we wanted and we can reuse
+it anywhere!</p>
+
+<div class="no-line-numbers">
+<figure class='code'><figcaption><span>spec/controllers/secrets_controller_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;rails_helper&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">describe</span> <span class="no">SecretsController</span> <span class="k">do</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;GET index&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it_requires_the_user_be_signed_in</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;GET show&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it_requires_the_user_be_signed_in</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">RSpec</span><span class="o">.</span><span class="n">describe</span> <span class="no">OtherController</span> <span class="k">do</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;GET new&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it_requires_the_user_be_signed_in</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">describe</span> <span class="s2">&quot;POST create&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it_requires_the_user_be_signed_in</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>It will automatically parse out the right HTTP method and controller action to
+invoke, and then run the right assertion.</p>
+
+<h2>Caveats</h2>
+
+<p>So far, controller authentication is the only case where I&#39;ve actually used this
+idea, but I&#39;m going to keep an eye out for more opportunities. It&#39;s definitely
+a technique to use sparingly, since it sacrifices clarity for convenience. But
+in this case, it&#39;s helping me move faster through the boilerplate so I can get
+back to the interesting stuff</p>
+
+    </div>
+  </div>
+
+
+
+  <footer>
+    <hr>
+    
+      <div class="row-fluid">
+        
+          <div class="span6">
+            <p class="meta">
+            
+            
+
+
+
+  <a href="/blog/categories/rails/"><span class="badge">rails</span></a>
+
+  <a href="/blog/categories/rspec/"><span class="badge">rspec</span></a>
+
+  <a href="/blog/categories/ruby/"><span class="badge">ruby</span></a>
+
+
+
+
+            </p>
+          </div>
+          
+            <div class="span6 social-sharing">
+              <div class="sharing">
+  <div class="addthis_toolbox addthis_default_style ">
+  
+  
+  <a class="addthis_button_tweet"></a>
+  
+  
+  <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+            </div>
+          
+        
+      </div>
+    
+    <div class="row-fluid">
+      <div class="span12">
+        <p class="meta">
+          
+            <a class="basic-alignment left" href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/" title="Previous Post: Including Only a Subset of Associated Records in ActiveRecord">&laquo; Including Only a Subset of Associated Records in ActiveRecord</a>
+          
+          
+        </p>
+      </div>
+    </div>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+
+        </div>
+        <aside class="span4 sidebar">
+          
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nwallace.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+
+
+          <section>
+  <h3>About</h3>
+  <p>I'm Nathan Wallace, and this is my blog about web development.</p>
+  <p class="clearfix"><a class="pull-right" href="/about">More &rarr;</a></p>
+</section>
+
+          <section>
+  <h3>Recent Posts</h3>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/04/20/rspec-macros/">RSpec Macros</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/">Including Only a Subset of Associated Records in ActiveRecord</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/sql-escapades-over-and-partition-by/">SQL Escapades: OVER and PARTITION BY</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/28/starcraft-ii-on-ubuntu-14-04/">Installing StarCraft II on Ubuntu 14.04</a>
+      </li>
+    
+  </ul>
+</section>
+
+        </aside>
+      </div>
+    </div>
+    <footer class="footer-page" role="contentinfo">
+      <p>
+  Copyright &copy; 2015 - Nathan Wallace -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+
+    </footer>
+  </div>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'nosuchthingastwo';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://nwallace.github.io/blog/2015/04/20/rspec-macros/';
+        var disqus_url = 'http://nwallace.github.io/blog/2015/04/20/rspec-macros/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

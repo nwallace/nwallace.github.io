@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | No Such Thing as Two]]></title>
   <link href="http://nwallace.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://nwallace.github.io/"/>
-  <updated>2015-03-31T22:45:48-04:00</updated>
+  <updated>2015-04-20T21:51:11-04:00</updated>
   <id>http://nwallace.github.io/</id>
   <author>
     <name><![CDATA[Nathan Wallace]]></name>
@@ -14,9 +14,179 @@
 
   
   <entry>
+    <title type="html"><![CDATA[RSpec Macros]]></title>
+    <link href="http://nwallace.github.io/blog/2015/04/20/rspec-macros/"/>
+    <updated>2015-04-20T00:00:00-04:00</updated>
+    <id>http://nwallace.github.io/blog/2015/04/20/rspec-macros</id>
+    <content type="html"><![CDATA[<p>Nobody likes writing boilerplate. It&#39;s repetitive, slow, and just plain boring.
+One of the first rules new programmers learn is not to repeat themselves. We do
+a good job upholding this principle in our app code, but unit tests are a
+different story. In unit tests, it&#39;s often preferable <em>not</em> to write DRY code.
+We prefer explicitness and clarity to malleability and reusability.</p>
+
+<p>Usually.</p>
+
+<p>As with all rules in software development, I believe there are exceptions to
+this rule. Consider authentication. For every route in your app that requires
+authentication, you need to write a controller test to assert that an
+unauthenticated user does not have access. I write those tests something like
+this (as described <a href="https://www.relishapp.com/rspec/rspec-rails/v/3-2/docs/controller-specs">here</a>).</p>
+
+<div class="no-line-numbers">
+```ruby spec/controllers/secrets_controller_spec.rb
+RSpec.describe SecretsController do
+
+  describe "GET index" do
+    it "requires the user be signed in" do
+      get :index
+      expect(response).to redirect_to new_session_path
+    end
+  end
+end
+```
+</div>
+
+<p>I&#39;ve written controller tests exactly like this at least a hundred times over
+the past couple of years, and you know what I realized? It&#39;s just
+<strong>boilerplate</strong>. It took me a long time to even consider those repetitive tests
+duplication (they&#39;re testing different application code, after all), but there
+comes a point when the repetition becomes hard to ignore.</p>
+
+<p>I wanted a way to simply declare that my controller action should require the
+user to be authenticated, rather than imperatively (and incessantly) writing out
+that same unit test again.</p>
+
+<p>I want to write code like this:</p>
+
+<div class="no-line-numbers">
+```ruby spec/controllers/secrets_controller_spec.rb
+RSpec.describe SecretsController do
+
+  describe "GET index" do
+    it_requires_the_user_be_signed_in
+  end
+end
+```
+</div>
+
+<p>We could accomplish something similar with <a href="http://www.relishapp.com/rspec/rspec-core/v/3-2/docs/example-groups/shared-examples">shared examples</a>, but the
+language isn&#39;t as expressive as I want. Could we define the method we want
+ourselves?</p>
+
+<h2>Parsing the HTTP method and controller action</h2>
+
+<p>Our method will need to send the right HTTP request to the right endpoint, then
+assert that the controller sent us to the sign in page. Due to my consistent
+organization of my controller specs, by the time we call
+<code>it_requires_the_user_be_signed_in</code>, we&#39;ve already written the name of the
+controller, the HTTP method and the controller action in our descriptions.</p>
+
+<p>We can get this information out of RSpec&#39;s <code>current_example</code> method within an
+example:</p>
+
+<div class="no-line-numbers no-code-title">
+```ruby
+RSpec.describe SomeClass do
+  describe "some description" do
+    it "can introspect its own metadata" do
+      expect(RSpec.current_example.metadata[:example_group][:description])
+        .to eq "some description"
+    end
+ end
+end
+```
+</div>
+
+<h2>A simple macro</h2>
+
+<p>RSpec also makes it easy to make extra methods available within an example. But
+in this case, we want the method <code>it_requires_the_user_be_signed_in</code> to be
+available outside the example blocks. The only way I know to accompish this is
+to define the method globally. For organizational purposes, I like to define a
+module and include that module into the global namespace in the appropriate
+<code>*_helper.rb</code> file:</p>
+
+<div class="no-line-numbers">
+```ruby spec/support/macros.rb
+module Macros
+  def it_requires_the_user_be_signed_in
+    it "requires the user be signed in" do
+      http_method, controller_action = (
+        RSpec.current_example.metadata[:example_group][:description]
+          .downcase.split.map(&:to_sym)
+      )
+
+      public_send(http_method, controller_action)
+
+      expect(response).to redirect_to new_session_path
+    end
+  end
+end
+```
+</div>
+
+<div class="no-line-numbers">
+```ruby spec/rails_helper.rb
+# ...
+
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+RSpec.configure do |config|
+  # ...
+end
+
+include Macros
+```
+</div>
+
+<p>With that in place, we&#39;ve implemented the interface we wanted and we can reuse
+it anywhere!</p>
+
+<div class="no-line-numbers">
+```ruby spec/controllers/secrets_controller_spec.rb
+require "rails_helper"
+
+RSpec.describe SecretsController do
+
+  describe "GET index" do
+    it_requires_the_user_be_signed_in
+  end
+
+  describe "GET show" do
+    it_requires_the_user_be_signed_in
+  end
+end
+
+RSpec.describe OtherController do
+
+  describe "GET new" do
+    it_requires_the_user_be_signed_in
+  end
+
+  describe "POST create" do
+    it_requires_the_user_be_signed_in
+  end
+end
+```
+</div>
+
+<p>It will automatically parse out the right HTTP method and controller action to
+invoke, and then run the right assertion.</p>
+
+<h2>Caveats</h2>
+
+<p>So far, controller authentication is the only case where I&#39;ve actually used this
+idea, but I&#39;m going to keep an eye out for more opportunities. It&#39;s definitely
+a technique to use sparingly, since it sacrifices clarity for convenience. But
+in this case, it&#39;s helping me move faster through the boilerplate so I can get
+back to the interesting stuff</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Including Only a Subset of Associated Records in ActiveRecord]]></title>
     <link href="http://nwallace.github.io/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/"/>
-    <updated>2015-03-31T21:48:46-04:00</updated>
+    <updated>2015-03-31T00:00:00-04:00</updated>
     <id>http://nwallace.github.io/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records</id>
     <content type="html"><![CDATA[<p>Recently, my pair and I were implementing a search feature for administrators to
 find customer records. In our app, customers can have many &quot;affiliations&quot; with
