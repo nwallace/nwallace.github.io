@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: javascript | No Such Thing as Two]]></title>
+  <link href="http://nwallace.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <link href="http://nwallace.github.io/"/>
+  <updated>2015-07-12T20:40:32-04:00</updated>
+  <id>http://nwallace.github.io/</id>
+  <author>
+    <name><![CDATA[Nathan Wallace]]></name>
+    <email><![CDATA[nathan@nosuchthingastwo.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Abstractions via functions]]></title>
+    <link href="http://nwallace.github.io/blog/2015/07/12/abstractions-via-functions/"/>
+    <updated>2015-07-12T00:00:00-04:00</updated>
+    <id>http://nwallace.github.io/blog/2015/07/12/abstractions-via-functions</id>
+    <content type="html"><![CDATA[<p>Proponents of functional programming are loud. They preach the gospel of
+immutability and simplicity at every opportunity, and make me feel like I need
+to repent for my stateful ways.</p>
+
+<p>Needless to say, I am intrigued.</p>
+
+<p>When <a href="https://www.youtube.com/watch?v=rI8tNMsozo0">so</a> <a href="https://www.destroyallsoftware.com/talks/boundaries">many</a> <a href="https://www.youtube.com/watch?v=DMtwq3QtddY">smart</a> <a href="http://codequarterly.com/2011/rich-hickey/">people</a> speak so adamantly about
+something, and the only other side of the argument is from people who haven&#39;t
+tried it, I tend to believe there&#39;s something to their beliefs.</p>
+
+<p>So, I tried to pick up Clojure. It&#39;s my sixth language, so it wasn&#39;t a struggle
+to pick up the syntax. But it has been a <em>huge</em> struggle to learn how to write
+web apps without objects to provide layers of abstractions for my code.</p>
+
+<p>In fact, I failed so completely at this that I gave up trying to learn Clojure.
+I rewrote the app I had started in Clojure and Clojurescript with Rails and
+React.</p>
+
+<p>Fortunately, a friend recommended I read the book <a href="http://www.functionaljavascript.com/">Functional Programming in
+Javascript</a> by Michael Fogus. This book was perfect! I already knew
+Javascript, so it let me focus on functional programming without being slowed
+down by unfamiliar syntax, libraries and parentheses (oh god, the parentheses!).</p>
+
+<p>This book helped me understand the fundamental concept I was missing when I got
+fed up with Clojure: how to use functions to create layers of abstraction in
+code.</p>
+
+<h2>An example</h2>
+
+<p>The example that drove the idea home for me was when he shows an implementation
+of input validation. I&#39;ve implented those several times before in Javascript,
+and they always look something like this:</p>
+
+<div class="no-line-numbers no-code-title">
+```javascript
+$("#sign-up-form").submit(function(event) {
+  var params = {
+    email: $(this).find("#email").val(),
+    password: $(this).find("#password").val(),
+    passwordConfirmation: $(this).find("#passwordConfirmation").val(),
+  };
+  var errors = validateSignUpForm(params);
+  if (errors.length > 0) {
+    event.preventDefault();
+    // display errors...
+  }
+});
+
+function validateSignUpForm(params) {
+  var errors = [];
+  if (params.email.length > 0) {
+    errors.push("Email is required");
+  }
+  if (params.password.length > 0) {
+    errors.push("Password is required");
+  }
+  if (params.password !== params.passwordConfirmation) {
+    errors.push("Password confirmation doesn't match");
+  }
+  return errors;
+};
+```
+</div>
+
+<p>This code is procedural, full of duplication, and hard to read.</p>
+
+<p>Using the full power of functional programming, we can reimplement
+<code>validateSignUpForm</code> like this:</p>
+
+<div class="no-line-numbers no-code-title">
+```javascript
+function validateSignUpForm(params) {
+  return validate(
+      params,
+      presenceValidation("email", "Email is required"),
+      presenceValidation("password", "Password is required"),
+      confirmationValidation("password", "passwordConfirmation", "Password confirmation doesn't match")
+    );
+}
+```
+</div>
+
+<p>Much better! This code is declarative instead of procedural. Duplication has
+been reduced, and it&#39;s much easier to understand. In fact, it&#39;s strikingly
+similar to ActiveRecord validations in Ruby. The key to these wins is
+simple: higher-order functions! Let&#39;s take a deeper look.</p>
+
+<h2>Higher-order functions to create abstractions</h2>
+
+<p>In our second version, all <code>validateSignUpForm</code> has to do is call the function
+<code>validate</code> with the input from the user and a list of the validations it wants
+to check. But what are those validation functions <code>presenceValidation</code> and
+<code>confirmationValidation</code>?</p>
+
+<p>Notice the input to these functions. Specifically, note how they don&#39;t receive
+the user input data. How the heck are those functions going to validate the
+user&#39;s input then? Well, they won&#39;t. But their return values will!</p>
+
+<p>The validation functions will return <em>new</em> functions that will do the actual
+work of performing the validation against the user input. These are higher-order
+functions at work. Let&#39;s look at one:</p>
+
+<div class="no-line-numbers no-code-title">
+```javascript
+function presenceValidation(field, errorMessage) {
+  return function(params) {
+    if (params[field].length < 0) {
+      return errorMessage;
+    }
+  };
+}
+```
+</div>
+
+<p>So we return a function that takes the user input data and returns an error
+message if there was an error, or nothing otherwise. Now we&#39;re getting
+somewhere.</p>
+
+<p>The final piece to put this all together is the <code>validate</code> function. As we saw,
+it receives the user input data and a list of validator functions (making it a
+higher-order function as well). So it has all the pieces it needs to return the
+array of error messages we&#39;re after.</p>
+
+<div class="no-line-numbers no-code-title">
+```javascript
+function validate(params /*, validators */) {
+  var errors = [], i = 1;
+  for (i; i < arguments.length; i++) {
+    var errorMessage = arguments[i](params);
+    if (errorMessage) {
+      errors.push(errorMessage);
+    }
+  }
+  return errors;
+}
+```
+</div>
+
+<p>Voila! The <code>validate</code> function loops through the validators it&#39;s given, calls
+each one with the user input data, and collects the error messages to return.</p>
+
+<h2>How far we&#39;ve come</h2>
+
+<p>Alone, the pieces are simple. Composed, they provide a powerful, elegant,
+flexible abstraction for validating user input! It&#39;s also completely stateless,
+by the way, so it&#39;s a cinch to test.</p>
+
+<p>I think I finally understand how to use functional programming paradigms to
+solve real-world web application problems. The next time I try to tackle
+Clojure, I&#39;ll be ready :)</p>
+]]></content>
+  </entry>
+  
+</feed>

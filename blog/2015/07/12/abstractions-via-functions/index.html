@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Abstractions via functions - No Such Thing as Two</title>
+  <meta name="author" content="Nathan Wallace">
+
+   
+  <meta name="description" content="A blog about Ruby!">
+  
+  <meta name="keywords" content="">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://nwallace.github.io/blog/2015/07/12/abstractions-via-functions">
+  <link href="/favicon.png" rel="icon">
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic|Ubuntu+Mono:400,700,400italic|Open+Sans:300italic,700italic,300,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Averia+Sans+Libre:300,400,700,300italic,400italic,700italic|Roboto+Condensed:300italic,400italic,700italic,400,300,700' rel='stylesheet' type='text/css'>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="No Such Thing as Two" type="application/atom+xml">
+  <script src="/js/jquery.js"></script>
+  <script src="/js/bootstrap-collapse.js"></script>
+  <script src="/js/modernizr-2.0.js"></script>
+  <script src="/js/octopress.js" type="text/javascript"></script>
+  <script src="/js/application.js"></script>
+  
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-49639013-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header id="title-banner">
+  <div id="banner-brand">
+    <div class="container">
+      <a href="/" title="No Such Thing as Two">No Such Thing as Two</a>
+      <h3 class="tagline">0011110000110011</h3>
+    </div>
+  </div>
+  <div class="navbar navbar-inverse navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+          <span class="fui-menu-24"></span>
+        </a>
+        <div class="nav-collapse collapse navbar-responsive-collapse" style="height:0;">
+          <ul class="nav">
+  <li >
+    <a href="/" title="0011110000110011">
+      <i class="icon-home social-navbar"></i>
+    </a>
+  </li>
+  <!---->
+</ul>
+
+<ul class="nav pull-right">
+  
+  <li><a href="http://github.com/nwallace" title="Github Profile"><i class="icon-github-sign social-navbar"></i></a></li>
+  
+  
+  
+  <li><a href="http://twitter.com/nosuchthingas2" title="Twitter Profile"><i class="icon-twitter-sign social-navbar"></i></a></li>
+  
+  
+  
+  <li><a href="http://linkedin.com/pub/nathan-wallace/32/40a/352" title="Linkedin Profile"><i class="icon-linkedin-sign social-navbar"></i></a></li>
+  
+  
+  
+  
+  <li><a href="mailto:nathan@nosuchthingastwo.com" title="Email"><i class="icon-envelope social-navbar"></i></a></li>
+  
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+  <div class="container" id="main">
+    <div class="row-fluid">
+      <div id="content">
+        <div class="span8">
+          <div>
+<article class="hentry" role="article">
+  
+
+  <header>
+    <div class="jumbotron">
+      Abstractions via Functions
+      <h5>
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2015-07-12T00:00:00-04:00" pubdate data-updated="true">July 12<span>th</span>, 2015</time></h5>
+    </div>
+  </header>
+  <div class="row-fluid">
+    <div class="span12">
+      <p>Proponents of functional programming are loud. They preach the gospel of
+immutability and simplicity at every opportunity, and make me feel like I need
+to repent for my stateful ways.</p>
+
+<p>Needless to say, I am intrigued.</p>
+
+<p>When <a href="https://www.youtube.com/watch?v=rI8tNMsozo0">so</a> <a href="https://www.destroyallsoftware.com/talks/boundaries">many</a> <a href="https://www.youtube.com/watch?v=DMtwq3QtddY">smart</a> <a href="http://codequarterly.com/2011/rich-hickey/">people</a> speak so adamantly about
+something, and the only other side of the argument is from people who haven&#39;t
+tried it, I tend to believe there&#39;s something to their beliefs.</p>
+
+<p>So, I tried to pick up Clojure. It&#39;s my sixth language, so it wasn&#39;t a struggle
+to pick up the syntax. But it has been a <em>huge</em> struggle to learn how to write
+web apps without objects to provide layers of abstractions for my code.</p>
+
+<p>In fact, I failed so completely at this that I gave up trying to learn Clojure.
+I rewrote the app I had started in Clojure and Clojurescript with Rails and
+React.</p>
+
+<p>Fortunately, a friend recommended I read the book <a href="http://www.functionaljavascript.com/">Functional Programming in
+Javascript</a> by Michael Fogus. This book was perfect! I already knew
+Javascript, so it let me focus on functional programming without being slowed
+down by unfamiliar syntax, libraries and parentheses (oh god, the parentheses!).</p>
+
+<p>This book helped me understand the fundamental concept I was missing when I got
+fed up with Clojure: how to use functions to create layers of abstraction in
+code.</p>
+
+<h2>An example</h2>
+
+<p>The example that drove the idea home for me was when he shows an implementation
+of input validation. I&#39;ve implented those several times before in Javascript,
+and they always look something like this:</p>
+
+<div class="no-line-numbers no-code-title">
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#sign-up-form&quot;</span><span class="p">).</span><span class="nx">submit</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">email</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s2">&quot;#email&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nx">password</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s2">&quot;#password&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nx">passwordConfirmation</span><span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="s2">&quot;#passwordConfirmation&quot;</span><span class="p">).</span><span class="nx">val</span><span class="p">(),</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">errors</span> <span class="o">=</span> <span class="nx">validateSignUpForm</span><span class="p">(</span><span class="nx">params</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">errors</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">event</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">// display errors...</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">validateSignUpForm</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">errors</span> <span class="o">=</span> <span class="p">[];</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">email</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">errors</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Email is required&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">password</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">errors</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Password is required&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">password</span> <span class="o">!==</span> <span class="nx">params</span><span class="p">.</span><span class="nx">passwordConfirmation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">errors</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">&quot;Password confirmation doesn&#39;t match&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">errors</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>This code is procedural, full of duplication, and hard to read.</p>
+
+<p>Using the full power of functional programming, we can reimplement
+<code>validateSignUpForm</code> like this:</p>
+
+<div class="no-line-numbers no-code-title">
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">validateSignUpForm</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">validate</span><span class="p">(</span>
+</span><span class='line'>      <span class="nx">params</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">presenceValidation</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;Email is required&quot;</span><span class="p">),</span>
+</span><span class='line'>      <span class="nx">presenceValidation</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;Password is required&quot;</span><span class="p">),</span>
+</span><span class='line'>      <span class="nx">confirmationValidation</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="s2">&quot;passwordConfirmation&quot;</span><span class="p">,</span> <span class="s2">&quot;Password confirmation doesn&#39;t match&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>Much better! This code is declarative instead of procedural. Duplication has
+been reduced, and it&#39;s much easier to understand. In fact, it&#39;s strikingly
+similar to ActiveRecord validations in Ruby. The key to these wins is
+simple: higher-order functions! Let&#39;s take a deeper look.</p>
+
+<h2>Higher-order functions to create abstractions</h2>
+
+<p>In our second version, all <code>validateSignUpForm</code> has to do is call the function
+<code>validate</code> with the input from the user and a list of the validations it wants
+to check. But what are those validation functions <code>presenceValidation</code> and
+<code>confirmationValidation</code>?</p>
+
+<p>Notice the input to these functions. Specifically, note how they don&#39;t receive
+the user input data. How the heck are those functions going to validate the
+user&#39;s input then? Well, they won&#39;t. But their return values will!</p>
+
+<p>The validation functions will return <em>new</em> functions that will do the actual
+work of performing the validation against the user input. These are higher-order
+functions at work. Let&#39;s look at one:</p>
+
+<div class="no-line-numbers no-code-title">
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">presenceValidation</span><span class="p">(</span><span class="nx">field</span><span class="p">,</span> <span class="nx">errorMessage</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">params</span><span class="p">[</span><span class="nx">field</span><span class="p">].</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">errorMessage</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>So we return a function that takes the user input data and returns an error
+message if there was an error, or nothing otherwise. Now we&#39;re getting
+somewhere.</p>
+
+<p>The final piece to put this all together is the <code>validate</code> function. As we saw,
+it receives the user input data and a list of validator functions (making it a
+higher-order function as well). So it has all the pieces it needs to return the
+array of error messages we&#39;re after.</p>
+
+<div class="no-line-numbers no-code-title">
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">validate</span><span class="p">(</span><span class="nx">params</span> <span class="cm">/*, validators */</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">errors</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="nx">i</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">errorMessage</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="nx">params</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">errorMessage</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">errors</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">errorMessage</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">errors</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+</div>
+
+<p>Voila! The <code>validate</code> function loops through the validators it&#39;s given, calls
+each one with the user input data, and collects the error messages to return.</p>
+
+<h2>How far we&#39;ve come</h2>
+
+<p>Alone, the pieces are simple. Composed, they provide a powerful, elegant,
+flexible abstraction for validating user input! It&#39;s also completely stateless,
+by the way, so it&#39;s a cinch to test.</p>
+
+<p>I think I finally understand how to use functional programming paradigms to
+solve real-world web application problems. The next time I try to tackle
+Clojure, I&#39;ll be ready :)</p>
+
+    </div>
+  </div>
+
+
+
+  <footer>
+    <hr>
+    
+      <div class="row-fluid">
+        
+          <div class="span6">
+            <p class="meta">
+            
+            
+
+
+
+  <a href="/blog/categories/functional-programming/"><span class="badge">functional programming</span></a>
+
+  <a href="/blog/categories/javascript/"><span class="badge">javascript</span></a>
+
+
+
+
+            </p>
+          </div>
+          
+            <div class="span6 social-sharing">
+              <div class="sharing">
+  <div class="addthis_toolbox addthis_default_style ">
+  
+  
+  <a class="addthis_button_tweet"></a>
+  
+  
+  <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+            </div>
+          
+        
+      </div>
+    
+    <div class="row-fluid">
+      <div class="span12">
+        <p class="meta">
+          
+            <a class="basic-alignment left" href="/blog/2015/04/20/rspec-macros/" title="Previous Post: RSpec Macros">&laquo; RSpec Macros</a>
+          
+          
+        </p>
+      </div>
+    </div>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+
+
+        </div>
+        <aside class="span4 sidebar">
+          
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:nwallace.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+
+
+          <section>
+  <h3>About</h3>
+  <p>I'm Nathan Wallace, and this is my blog about web development.</p>
+  <p class="clearfix"><a class="pull-right" href="/about">More &rarr;</a></p>
+</section>
+
+          <section>
+  <h3>Recent Posts</h3>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/07/12/abstractions-via-functions/">Abstractions via functions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/20/rspec-macros/">RSpec Macros</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/31/activerecord-including-only-a-subset-of-associated-records/">Including Only a Subset of Associated Records in ActiveRecord</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/28/aw-snap-ubuntu-core/">Aw snap! Ubuntu Core</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/10/sql-escapades-over-and-partition-by/">SQL Escapades: OVER and PARTITION BY</a>
+      </li>
+    
+  </ul>
+</section>
+
+        </aside>
+      </div>
+    </div>
+    <footer class="footer-page" role="contentinfo">
+      <p>
+  Copyright &copy; 2015 - Nathan Wallace -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+
+    </footer>
+  </div>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'nosuchthingastwo';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://nwallace.github.io/blog/2015/07/12/abstractions-via-functions/';
+        var disqus_url = 'http://nwallace.github.io/blog/2015/07/12/abstractions-via-functions/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
